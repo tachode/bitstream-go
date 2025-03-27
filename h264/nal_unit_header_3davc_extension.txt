@@ -1,0 +1,8 @@
+nal_unit_header_3davc_extension( ) {
+    view_idx All u(8)
+    depth_flag All u(1)
+    non_idr_flag All u(1)
+    temporal_id All u(3)
+    anchor_pic_flag All u(1)
+    inter_view_flag All u(1)
+}

@@ -74,7 +74,7 @@ func TestReadBuffer_ReadInvalidBits(t *testing.T) {
 	reader := bytes.NewReader([]byte{0b10101010})
 	readBuffer := &bits.ReadBuffer{Reader: reader}
 
-	_, err := readBuffer.Read(0)
+	_, err := readBuffer.Read(-1)
 	if err != io.ErrShortBuffer {
 		t.Errorf("expected io.ErrShortBuffer, got %v", err)
 	}

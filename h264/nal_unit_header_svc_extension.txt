@@ -1,0 +1,12 @@
+nal_unit_header_svc_extension( ) {
+    idr_flag All u(1)
+    priority_id All u(6)
+    no_inter_layer_pred_flag All u(1)
+    dependency_id All u(3)
+    quality_id All u(4)
+    temporal_id All u(3)
+    use_ref_base_pic_flag All u(1)
+    discardable_flag All u(1)
+    output_flag All u(1)
+    reserved_three_2bits All u(2)
+}

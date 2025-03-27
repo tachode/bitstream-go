@@ -1,0 +1,32 @@
+nal_unit( NumBytesInNALunit ) {
+    forbidden_zero_bit All f(1)=0
+    nal_ref_idc All u(2)
+    nal_unit_type All u(5)
+    NumBytesInRBSP = 0
+    nalUnitHeaderBytes = 1
+    if( nal_unit_type == 14 || nal_unit_type == 20 || nal_unit_type == 21 ) {
+        if( nal_unit_type ! = 21 )
+            svc_extension_flag All u(1)
+        else
+            avc_3d_extension_flag All u(1)
+        if( svc_extension_flag ) {
+            nal_unit_header_svc_extension( ) /* specified in Annex G */ All
+            nalUnitHeaderBytes += 3
+        } else if( avc_3d_extension_flag ) {
+            nal_unit_header_3davc_extension( ) /* specified in Annex J */
+            nalUnitHeaderBytes += 2
+        } else {
+            nal_unit_header_mvc_extension( ) /* specified in Annex H */ All
+            nalUnitHeaderBytes += 3
+        }
+    }
+    for( i = nalUnitHeaderBytes; i < NumBytesInNALunit; i++ ) {
+        if( i + 2 < NumBytesInNALunit && next_bits( 24 ) == 0x000003 ) {
+            rbsp_byte[ NumBytesInRBSP++ ] All b(8)
+            rbsp_byte[ NumBytesInRBSP++ ] All b(8)
+            i += 2
+            emulation_prevention_three_byte /* equal to 0x03 */ All f(8)=3
+        } else
+            rbsp_byte[ NumBytesInRBSP++ ] All b(8)
+    }
+}

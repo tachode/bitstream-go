@@ -1,0 +1,54 @@
+vui_parameters( ) {
+    aspect_ratio_info_present_flag 0 u(1)
+    if( aspect_ratio_info_present_flag ) {
+        aspect_ratio_idc 0 u(8)
+        if( aspect_ratio_idc = = Extended_SAR ) {
+            sar_width 0 u(16)
+            sar_height 0 u(16)
+        }
+    }
+    overscan_info_present_flag 0 u(1)
+    if( overscan_info_present_flag )
+        overscan_appropriate_flag 0 u(1)
+    video_signal_type_present_flag 0 u(1)
+    if( video_signal_type_present_flag ) {
+        video_format 0 u(3)
+        video_full_range_flag 0 u(1)
+        colour_description_present_flag 0 u(1)
+        if( colour_description_present_flag ) {
+            colour_primaries 0 u(8)
+            transfer_characteristics 0 u(8)
+            matrix_coefficients 0 u(8)
+        }
+    }
+    chroma_loc_info_present_flag 0 u(1)
+    if( chroma_loc_info_present_flag ) {
+        chroma_sample_loc_type_top_field 0 ue(v)
+        chroma_sample_loc_type_bottom_field 0 ue(v)
+    }
+    timing_info_present_flag 0 u(1)
+    if( timing_info_present_flag ) {
+        num_units_in_tick 0 u(32)
+        time_scale 0 u(32)
+        fixed_frame_rate_flag 0 u(1)
+    }
+    nal_hrd_parameters_present_flag 0 u(1)
+    if( nal_hrd_parameters_present_flag )
+        hrd_parameters( ) 0
+    vcl_hrd_parameters_present_flag 0 u(1)
+    if( vcl_hrd_parameters_present_flag )
+        hrd_parameters( ) 0
+    if( nal_hrd_parameters_present_flag | | vcl_hrd_parameters_present_flag )
+        low_delay_hrd_flag 0 u(1)
+    pic_struct_present_flag 0 u(1)
+    bitstream_restriction_flag 0 u(1)
+    if( bitstream_restriction_flag ) {
+        motion_vectors_over_pic_boundaries_flag 0 u(1)
+        max_bytes_per_pic_denom 0 ue(v)
+        max_bits_per_mb_denom 0 ue(v)
+        log2_max_mv_length_horizontal 0 ue(v)
+        log2_max_mv_length_vertical 0 ue(v)
+        max_num_reorder_frames 0 ue(v)
+        max_dec_frame_buffering 0 ue(v)
+    }
+}

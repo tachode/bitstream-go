@@ -2,6 +2,13 @@ package bits
 
 import "io"
 
+/*
+type Reader interface {
+	Read(bits int) (uint64, error)
+	Align() error
+}
+*/
+
 type ReadBuffer struct {
 	Reader io.Reader
 	buffer uint64
@@ -10,8 +17,11 @@ type ReadBuffer struct {
 
 // Read reads the specified number of bits from the buffer and returns the value as a uint64.
 func (b *ReadBuffer) Read(bits int) (uint64, error) {
-	if bits <= 0 || bits > 64 {
+	if bits < 0 || bits > 64 {
 		return 0, io.ErrShortBuffer
+	}
+	if bits == 0 {
+		return 0, nil
 	}
 
 	// Ensure the buffer has enough bits

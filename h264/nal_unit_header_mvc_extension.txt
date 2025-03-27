@@ -1,0 +1,9 @@
+nal_unit_header_mvc_extension( ) {
+    non_idr_flag All u(1)
+    priority_id All u(6)
+    view_id All u(10)
+    temporal_id All u(3)
+    anchor_pic_flag All u(1)
+    inter_view_flag All u(1)
+    reserved_one_bit All u(1)
+}

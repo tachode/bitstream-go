@@ -1,0 +1,13 @@
+scaling_list( scalingList, sizeOfScalingList, useDefaultScalingMatrixFlag ) { C Descriptor
+  lastScale = 8
+  nextScale = 8
+  for( j = 0; j < sizeOfScalingList; j++ ) {
+    if( nextScale != 0 ) {
+      delta_scale 0 se(v)
+      nextScale = ( lastScale + delta_scale + 256 ) % 256
+      useDefaultScalingMatrixFlag = ( j = = 0 && nextScale = = 0 )
+    }
+    scalingList[ j ] = ( nextScale = = 0 ) ? lastScale : nextScale
+    lastScale = scalingList[ j ]
+  }
+}

@@ -6,6 +6,11 @@ import (
 	"reflect"
 )
 
+type Writer interface {
+	Write(v any, bits int) error
+	Flush() error
+}
+
 type WriteBuffer struct {
 	Writer io.Writer
 	buffer uint64

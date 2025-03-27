@@ -1,0 +1,14 @@
+hrd_parameters( ) {
+    cpb_cnt_minus1 0 ue(v)
+    bit_rate_scale 0 u(4)
+    cpb_size_scale 0 u(4)
+    for( SchedSelIdx = 0; SchedSelIdx <= cpb_cnt_minus1; SchedSelIdx++ ) {
+        bit_rate_value_minus1[ SchedSelIdx ] 0 ue(v)
+        cpb_size_value_minus1[ SchedSelIdx ] 0 ue(v)
+        cbr_flag[ SchedSelIdx ] 0 u(1)
+    }
+    initial_cpb_removal_delay_length_minus1 0 u(5)
+    cpb_removal_delay_length_minus1 0 u(5)
+    dpb_output_delay_length_minus1 0 u(5)
+    time_offset_length 0 u(5)
+}
