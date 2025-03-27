@@ -125,3 +125,13 @@ func (e *SeqParameterSet) Read(d bits.Decoder) error {
 	}
 	return d.Error()
 }
+
+// H.264 §7.4.2.1.1:
+// - If separate_colour_plane_flag is equal to 0, ChromaArrayType is set equal to chroma_format_idc.
+// - Otherwise (separate_colour_plane_flag is equal to 1), ChromaArrayType is set equal to 0.
+func (e SeqParameterSet) ChromaArrayType() int {
+	if e.SeparateColourPlaneFlag {
+		return 0
+	}
+	return int(e.ChromaFormatIdc)
+}
