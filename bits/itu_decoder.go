@@ -3,6 +3,9 @@ package bits
 import (
 	"fmt"
 	"reflect"
+	"strconv"
+	"strings"
+	"unicode"
 )
 
 type ItuDecoder struct {
@@ -27,7 +30,8 @@ func (d *ItuDecoder) DecodeRange(v any, start string, end string) error {
 		d.err = fmt.Errorf("expected a pointer to a struct, got %T", v)
 		return d.err
 	}
-	typ := val.Elem().Type()
+	val = val.Elem()
+	typ := val.Type()
 
 	startField, ok := typ.FieldByName(start)
 	if !ok {
@@ -70,7 +74,8 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int) error {
 		d.err = fmt.Errorf("expected a pointer to a struct, got %T", v)
 		return d.err
 	}
-	typ := val.Elem().Type()
+	val = val.Elem()
+	typ := val.Type()
 
 	structField, ok := typ.FieldByName(fieldName)
 	if !ok {
@@ -163,20 +168,17 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 }
 
 func parseDescriptor(descriptor string) (typ string, length int, fixedValue uint64, err error) {
-	_, err = fmt.Sscanf(descriptor, "%[a-z](%d)=%d", &typ, &length, &fixedValue)
-	if err == nil {
-		return typ, length, fixedValue, nil
-	}
+	f := func(c rune) bool { return !unicode.IsLetter(c) && !unicode.IsNumber(c) }
+	fields := strings.FieldsFunc(descriptor, f)
 
-	_, err = fmt.Sscanf(descriptor, "%[a-z](%d)", &typ, &length)
-	if err == nil {
-		return typ, length, 0, nil
+	if len(fields) < 2 || len(fields) > 3 {
+		err = fmt.Errorf("invalid descriptor format: %s", descriptor)
+		return
 	}
-
-	_, err = fmt.Sscanf(descriptor, "%[a-z](v)", &typ)
-	if err == nil {
-		return typ, 0, 0, nil
+	typ = fields[0]
+	length, _ = strconv.Atoi(fields[1])
+	if len(fields) == 3 {
+		fixedValue, _ = strconv.ParseUint(fields[2], 10, 0)
 	}
-
-	return "", 0, 0, fmt.Errorf("invalid descriptor format: %s", descriptor)
+	return
 }
