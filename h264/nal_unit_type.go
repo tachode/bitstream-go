@@ -1,5 +1,7 @@
 package h264
 
+import "encoding/json"
+
 type NalUnitType uint8
 
 //go:generate stringer -type=NalUnitType -trimprefix=NalUnitType
@@ -24,3 +26,23 @@ const (
 	NalUnitTypeCodedSliceExtension      NalUnitType = 20 // Coded slice extension
 	NalUnitTypeCodedSliceExtension3D    NalUnitType = 21 // Coded slice extension for a depth view component or a 3D-AVC texture view component
 )
+
+func (t NalUnitType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(t.String())
+}
+
+func (t *NalUnitType) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	for i := NalUnitTypeCodedSliceNonIdr; i <= NalUnitTypeCodedSliceExtension3D; i++ {
+		if i.String() == s {
+			*t = i
+			return nil
+		}
+	}
+
+	return json.Unmarshal(data, (*uint8)(t))
+}

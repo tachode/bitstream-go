@@ -75,6 +75,7 @@ func (e *SeqParameterSet) Read(d bits.Decoder) error {
 			for i := 0; i < len; i++ {
 				d.DecodeIndex(e, "SeqScalingListPresentFlag", i)
 				if e.SeqScalingListPresentFlag[i] {
+					panic("scaling lists not implemented yet")
 					// TODO -- add these fields, adapt ScalingList to provide output parameters, don't store in e
 					/*
 					   if i < 6 {

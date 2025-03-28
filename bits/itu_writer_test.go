@@ -11,7 +11,7 @@ type mockWriteBuffer struct {
 	buffer bytes.Buffer
 }
 
-func (m *mockWriteBuffer) Write(value any, bits int) error {
+func (m *mockWriteBuffer) WriteBits(value any, bits int) error {
 	v := value.(uint64)
 	for i := bits - 1; i >= 0; i-- {
 		bit := (v >> i) & 1
@@ -24,7 +24,8 @@ func (m *mockWriteBuffer) Write(value any, bits int) error {
 	return nil
 }
 
-func (m *mockWriteBuffer) Flush() error { return nil }
+func (m *mockWriteBuffer) Flush() error              { return nil }
+func (m *mockWriteBuffer) Write([]byte) (int, error) { return 0, nil }
 
 ///////////////////////////////////////////////////////////////////////////
 

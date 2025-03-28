@@ -2,12 +2,11 @@ package bits
 
 import "io"
 
-/*
 type Reader interface {
-	Read(bits int) (uint64, error)
+	io.Reader
+	ReadBits(bits int) (uint64, error)
 	Align() error
 }
-*/
 
 type ReadBuffer struct {
 	Reader io.Reader
@@ -15,8 +14,13 @@ type ReadBuffer struct {
 	bits   int
 }
 
-// Read reads the specified number of bits from the buffer and returns the value as a uint64.
-func (b *ReadBuffer) Read(bits int) (uint64, error) {
+func (b *ReadBuffer) Read(buf []byte) (n int, err error) {
+	b.Align()
+	return b.Reader.Read(buf)
+}
+
+// ReadBits reads the specified number of bits from the buffer and returns the value as a uint64.
+func (b *ReadBuffer) ReadBits(bits int) (uint64, error) {
 	if bits < 0 || bits > 64 {
 		return 0, io.ErrShortBuffer
 	}
@@ -44,14 +48,8 @@ func (b *ReadBuffer) Read(bits int) (uint64, error) {
 	return value, nil
 }
 
-// Align discards bits until the bitstream is aligned on a byte boundary.
 func (b *ReadBuffer) Align() error {
-	remainingBits := b.bits % 8
-	if remainingBits > 0 {
-		_, err := b.Read(remainingBits)
-		if err != nil {
-			return err
-		}
-	}
+	b.bits = 0
+	b.buffer = 0
 	return nil
 }

@@ -13,7 +13,7 @@ type ItuWriter struct {
 // This is simply an alias so that the methods on ItuWriter match the syntax in the
 // H.264 spec
 func (r *ItuWriter) U(v any, bits int) error {
-	return r.Write(v, bits)
+	return r.WriteBits(v, bits)
 }
 
 // Unsigned exponential Golomb encoding
@@ -32,10 +32,10 @@ func (w *ItuWriter) UE(v any) error {
 	bits := int(math.Log2(float64(value+1))) + 1
 
 	// Write leading zeros
-	w.Write(uint64(0), bits-1)
+	w.WriteBits(uint64(0), bits-1)
 
 	// Write the value
-	w.Write(uint64(value+1), bits)
+	w.WriteBits(uint64(value+1), bits)
 
 	return nil
 }

@@ -29,7 +29,7 @@ func TestWriteBuffer_Write(t *testing.T) {
 	for i, tt := range tests {
 		buf.Reset()
 		for j := 0; j <= i; j++ {
-			err := writer.Write(tests[j].value, tests[j].bits)
+			err := writer.WriteBits(tests[j].value, tests[j].bits)
 			if err != nil {
 				t.Errorf("Write(0b%b, %d) returned error: %v", tests[j].value, tests[j].bits, err)
 			}
@@ -48,7 +48,7 @@ func TestWriteBuffer_Flush(t *testing.T) {
 	var buf bytes.Buffer
 	writer := &bits.WriteBuffer{Writer: &buf}
 
-	err := writer.Write(uint8(0b101), 3)
+	err := writer.WriteBits(uint8(0b101), 3)
 	if err != nil {
 		t.Fatalf("Write returned error: %v", err)
 	}
@@ -68,7 +68,7 @@ func TestWriteBuffer_WriteInvalidType(t *testing.T) {
 	var buf bytes.Buffer
 	writer := &bits.WriteBuffer{Writer: &buf}
 
-	err := writer.Write("invalid", 3)
+	err := writer.WriteBits("invalid", 3)
 	if err == nil {
 		t.Error("Write with invalid type did not return an error")
 	}

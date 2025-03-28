@@ -7,7 +7,8 @@ import (
 )
 
 type Writer interface {
-	Write(v any, bits int) error
+	io.Writer
+	WriteBits(v any, bits int) error
 	Flush() error
 }
 
@@ -17,7 +18,12 @@ type WriteBuffer struct {
 	bits   int
 }
 
-func (b *WriteBuffer) Write(v any, bits int) error {
+func (b *WriteBuffer) Write(p []byte) (n int, err error) {
+	b.Flush()
+	return b.Writer.Write(p)
+}
+
+func (b *WriteBuffer) WriteBits(v any, bits int) error {
 	val := reflect.ValueOf(v)
 	var value uint64
 	switch {

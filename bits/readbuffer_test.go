@@ -27,7 +27,7 @@ func TestReadBuffer_Read(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result, err := readBuffer.Read(test.bitsToRead)
+		result, err := readBuffer.ReadBits(test.bitsToRead)
 		if test.expectErr {
 			if err == nil {
 				t.Errorf("expected error but got none")
@@ -49,7 +49,7 @@ func TestReadBuffer_Align(t *testing.T) {
 	readBuffer := &bits.ReadBuffer{Reader: reader}
 
 	// Read 5 bits
-	_, err := readBuffer.Read(5)
+	_, err := readBuffer.ReadBits(5)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -61,7 +61,7 @@ func TestReadBuffer_Align(t *testing.T) {
 	}
 
 	// Read the next byte
-	result, err := readBuffer.Read(8)
+	result, err := readBuffer.ReadBits(8)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -74,12 +74,12 @@ func TestReadBuffer_ReadInvalidBits(t *testing.T) {
 	reader := bytes.NewReader([]byte{0b10101010})
 	readBuffer := &bits.ReadBuffer{Reader: reader}
 
-	_, err := readBuffer.Read(-1)
+	_, err := readBuffer.ReadBits(-1)
 	if err != io.ErrShortBuffer {
 		t.Errorf("expected io.ErrShortBuffer, got %v", err)
 	}
 
-	_, err = readBuffer.Read(65)
+	_, err = readBuffer.ReadBits(65)
 	if err != io.ErrShortBuffer {
 		t.Errorf("expected io.ErrShortBuffer, got %v", err)
 	}

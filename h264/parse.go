@@ -2,6 +2,7 @@ package h264
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/tachode/bitstream-go/bits"
 )
@@ -97,6 +98,8 @@ func Parse(buffer []byte) (*NalUnit, error) {
 		// payload := &SliceLayerExtension{}
 		// payload.Read(decoder)
 		// nal.Payload = payload
+	default:
+		return nil, fmt.Errorf("unexpected NAL unit type: %v", nal.NalUnitType)
 	}
 
 	return nal, decoder.Error()

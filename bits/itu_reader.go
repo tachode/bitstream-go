@@ -1,10 +1,5 @@
 package bits
 
-type Reader interface {
-	Read(bits int) (uint64, error)
-	Align() error
-}
-
 type ItuReader struct {
 	Reader
 }
@@ -12,7 +7,7 @@ type ItuReader struct {
 // This is simply an alias so that the methods on ItuReader match the syntax in the
 // H.264 spec
 func (r *ItuReader) U(bits int) (uint64, error) {
-	return r.Read(bits)
+	return r.ReadBits(bits)
 }
 
 func (r *ItuReader) UE() (uint64, error) {
@@ -22,7 +17,7 @@ func (r *ItuReader) UE() (uint64, error) {
 	var err error
 
 	for {
-		bit, err := r.Read(1)
+		bit, err := r.ReadBits(1)
 		if err != nil {
 			return 0, err
 		}
@@ -33,7 +28,7 @@ func (r *ItuReader) UE() (uint64, error) {
 	}
 
 	if leadingZeroBits != 0 {
-		val, err = r.Read(leadingZeroBits)
+		val, err = r.ReadBits(leadingZeroBits)
 		if err != nil {
 			return 0, err
 		}

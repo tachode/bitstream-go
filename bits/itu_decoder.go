@@ -17,6 +17,14 @@ func NewItuDecoder(r *ItuReader) *ItuDecoder {
 	return &ItuDecoder{reader: r}
 }
 
+func (d *ItuDecoder) Read(b []byte) (n int, err error) {
+	n, err = d.reader.Read(b)
+	if err != nil {
+		d.err = err
+	}
+	return n, err
+}
+
 func (d *ItuDecoder) Decode(v any, fieldName string) error {
 	return d.DecodeRange(v, fieldName, fieldName)
 }
@@ -89,7 +97,7 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int) error {
 		return d.err
 	}
 	if structVal.IsZero() {
-		structVal.Set(reflect.MakeSlice(structVal.Type().Elem(), index, index+16))
+		structVal.Set(reflect.MakeSlice(structVal.Type(), index, index+16))
 	}
 	if index+1 > structVal.Cap() {
 		// We don't want to do this too often, so we're going to increase by
@@ -98,7 +106,7 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int) error {
 		structVal.Grow(index + structVal.Len())
 	}
 	if index+1 > structVal.Len() {
-		structVal.SetLen(index)
+		structVal.SetLen(index + 1)
 	}
 	err := d.load(fmt.Sprintf("%v[%v]", structField.Name, index), structVal.Index(index), descriptor)
 	if err != nil {
