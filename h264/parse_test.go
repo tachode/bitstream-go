@@ -8,7 +8,6 @@ import (
 )
 
 func TestParse_ValidSPS(t *testing.T) {
-	// Example SPS NAL unit (not real data, replace with actual SPS NAL unit bytes)
 	spsNalUnit := spsBytes[:]
 
 	nal, err := h264.Parse(spsNalUnit)
@@ -21,6 +20,30 @@ func TestParse_ValidSPS(t *testing.T) {
 	}
 
 	if _, ok := nal.Payload.(*h264.SeqParameterSet); !ok {
+		t.Errorf("Expected payload to be of type SeqParameterSet")
+	}
+
+	nalJSON, err := json.MarshalIndent(nal, "", "  ")
+	if err != nil {
+		t.Fatalf("Failed to marshal nal to JSON: %v", err)
+	}
+
+	t.Logf("NAL JSON:\n%s", nalJSON)
+}
+
+func TestParse_ValidPPS(t *testing.T) {
+	ppsNalUnit := ppsBytes[:]
+
+	nal, err := h264.Parse(ppsNalUnit)
+	if err != nil {
+		t.Fatalf("Parse failed: %v", err)
+	}
+
+	if nal.NalUnitType != h264.NalUnitTypePPS {
+		t.Errorf("Expected NalUnitTypePPS, got %v", nal.NalUnitType)
+	}
+
+	if _, ok := nal.Payload.(*h264.PicParameterSet); !ok {
 		t.Errorf("Expected payload to be of type SeqParameterSet")
 	}
 

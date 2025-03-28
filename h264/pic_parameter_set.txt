@@ -1,0 +1,50 @@
+pic_parameter_set( ) {
+    pic_parameter_set_id 1 ue(v)
+    seq_parameter_set_id 1 ue(v)
+    entropy_coding_mode_flag 1 u(1)
+    bottom_field_pic_order_in_frame_present_flag 1 u(1)
+    num_slice_groups_minus1 1 ue(v)
+    if( num_slice_groups_minus1 > 0 ) {
+        slice_group_map_type 1 ue(v)
+        if( slice_group_map_type = = 0 )
+            for( iGroup = 0; iGroup <= num_slice_groups_minus1; iGroup++ )
+                run_length_minus1[ iGroup ] 1 ue(v)
+        else if( slice_group_map_type = = 2 )
+            for( iGroup = 0; iGroup < num_slice_groups_minus1; iGroup++ ) {
+                top_left[ iGroup ] 1 ue(v)
+                bottom_right[ iGroup ] 1 ue(v)
+            }
+    else if( slice_group_map_type = = 3 | | slice_group_map_type = = 4 | | slice_group_map_type = = 5 ) {
+            slice_group_change_direction_flag 1 u(1)
+            slice_group_change_rate_minus1 1 ue(v)
+        } else if( slice_group_map_type = = 6 ) {
+            pic_size_in_map_units_minus1 1 ue(v)
+            for( i = 0; i <= pic_size_in_map_units_minus1; i++ )
+                slice_group_id[ i ] 1 u(v)
+        }
+    }
+    num_ref_idx_l0_default_active_minus1 1 ue(v)
+    num_ref_idx_l1_default_active_minus1 1 ue(v)
+    weighted_pred_flag 1 u(1)
+    weighted_bipred_idc 1 u(2)
+    pic_init_qp_minus26 1 se(v)
+    pic_init_qs_minus26 1 se(v)
+    chroma_qp_index_offset 1 se(v)
+    deblocking_filter_control_present_flag 1 u(1)
+    constrained_intra_pred_flag 1 u(1)
+    redundant_pic_cnt_present_flag 1 u(1)
+    if( more_rbsp_data( ) ) {
+        transform_8x8_mode_flag 1 u(1)
+        pic_scaling_matrix_present_flag 1 u(1)
+        if( pic_scaling_matrix_present_flag )
+            for( i = 0; i < 6 + ( ( chroma_format_idc != 3 ) ? 2 : 6 ) * transform_8x8_mode_flag; i++ ) {
+                pic_scaling_list_present_flag[ i ] 1 u(1)
+                if( pic_scaling_list_present_flag[ i ] )
+                    if( i < 6 )
+                        scaling_list( ScalingList4x4[ i ], 16, UseDefaultScalingMatrix4x4Flag[ i ] ) 1
+                    else
+                        scaling_list( ScalingList8x8[ i − 6 ], 64, UseDefaultScalingMatrix8x8Flag[ i − 6 ] ) 1
+            }
+        second_chroma_qp_index_offset 1 se(v)
+    }
+}

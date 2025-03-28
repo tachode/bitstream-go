@@ -10,11 +10,23 @@ import (
 
 type ItuDecoder struct {
 	reader *ItuReader
+	value  map[string]any
 	err    error
 }
 
 func NewItuDecoder(r *ItuReader) *ItuDecoder {
-	return &ItuDecoder{reader: r}
+	return &ItuDecoder{
+		reader: r,
+		value:  make(map[string]any),
+	}
+}
+
+func (d *ItuDecoder) Value(name string) any {
+	val, ok := d.value[name]
+	if !ok {
+		return nil
+	}
+	return val
 }
 
 func (d *ItuDecoder) Read(b []byte) (n int, err error) {
@@ -148,6 +160,7 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 				return fmt.Errorf("field %v: value %v does not match expected value %v", name, v, fixedValue)
 			}
 		}
+		d.value[name] = v
 	case "ue":
 		v, err := d.reader.UE()
 		if err != nil {
@@ -158,6 +171,7 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
+		d.value[name] = v
 
 	case "se":
 		v, err := d.reader.SE()
@@ -169,6 +183,7 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
+		d.value[name] = v
 	default:
 		return fmt.Errorf("field %v: descriptor type %v is invalid", name, descriptorType)
 	}

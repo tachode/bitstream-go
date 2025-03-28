@@ -51,9 +51,9 @@ func Parse(buffer []byte) (*NalUnit, error) {
 		payload.Read(decoder)
 		nal.Payload = payload
 	case NalUnitTypePPS:
-		// payload := &PicParameterSet{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
+		payload := &PicParameterSet{}
+		payload.Read(decoder)
+		nal.Payload = payload
 	case NalUnitTypeAUD:
 		// payload := &AccessUnitDelimiter{}
 		// payload.Read(decoder)
