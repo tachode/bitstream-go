@@ -1,6 +1,8 @@
 package bits
 
-import "io"
+import (
+	"io"
+)
 
 type Reader interface {
 	io.Reader

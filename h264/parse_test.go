@@ -55,16 +55,6 @@ func TestParse_ValidPPS(t *testing.T) {
 	t.Logf("NAL JSON:\n%s", nalJSON)
 }
 
-func TestParse_InvalidData(t *testing.T) {
-	// Invalid NAL unit data
-	invalidNalUnit := []byte{0x00, 0x00, 0x00}
-
-	_, err := h264.Parse(invalidNalUnit)
-	if err == nil {
-		t.Fatalf("Expected error for invalid NAL unit, got nil")
-	}
-}
-
 func TestParse_EmptyBuffer(t *testing.T) {
 	// Empty buffer
 	emptyBuffer := []byte{}

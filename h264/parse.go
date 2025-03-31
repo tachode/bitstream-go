@@ -3,9 +3,23 @@ package h264
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 
 	"github.com/tachode/bitstream-go/bits"
 )
+
+type NalPayload interface {
+	Read(d bits.Decoder) error
+}
+
+var nalPayloadRegistry map[NalUnitType]NalPayload
+
+func RegisterNalPayload(typ NalUnitType, v NalPayload) {
+	if nalPayloadRegistry == nil {
+		nalPayloadRegistry = make(map[NalUnitType]NalPayload)
+	}
+	nalPayloadRegistry[typ] = v
+}
 
 func Parse(buffer []byte) (*NalUnit, error) {
 	reader := &bits.ReadBuffer{Reader: bytes.NewBuffer(buffer)}
@@ -21,86 +35,18 @@ func Parse(buffer []byte) (*NalUnit, error) {
 	ituReader = &bits.ItuReader{Reader: reader}
 	decoder = bits.NewItuDecoder(ituReader)
 
-	switch nal.NalUnitType {
-	case NalUnitTypeCodedSliceNonIdr:
-		// payload := &SliceLayerWithoutPartioning{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceDataPartitionA:
-		// payload := &SliceDataPartitionALayer{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceDataPartitionB:
-		// payload := &SliceDataPartitionBLayer{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceDataPartitionC:
-		// payload := &SliceDataPartitionCLayer{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceIdr:
-		// payload := &SliceLayerWithoutPartioning{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeSEI:
-		// payload := &Sei{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeSPS:
-		payload := &SeqParameterSet{}
-		payload.Read(decoder)
-		nal.Payload = payload
-	case NalUnitTypePPS:
-		payload := &PicParameterSet{}
-		payload.Read(decoder)
-		nal.Payload = payload
-	case NalUnitTypeAUD:
-		// payload := &AccessUnitDelimiter{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeEndOfSequence:
-		// payload := &EndOfSeq{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeEndOfStream:
-		// payload := &EndOfStream{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeFiller:
-		// payload := &FillerData{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeSpsExt:
-		// payload := &SeqParameterSetExtension{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypePrefixNalUnit:
-		// payload := &PrefixNalUnit{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeSubsetSeqParameterSet:
-		// payload := &SubsetSeqParameterSet{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeDepthParameterSet:
-		// payload := &DepthParameterSet{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceAux:
-		// payload := &SliceLayerWithoutPartioning{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceExtension:
-		// payload := &SliceLayerExtension{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	case NalUnitTypeCodedSliceExtension3D:
-		// payload := &SliceLayerExtension{}
-		// payload.Read(decoder)
-		// nal.Payload = payload
-	default:
-		return nil, fmt.Errorf("unexpected NAL unit type: %v", nal.NalUnitType)
+	prototype, ok := nalPayloadRegistry[nal.NalUnitType]
+	if !ok {
+		// We don't understand this NAL type, but its payload is in the RBSP bytes,
+		// so the application may be able to make use of it anyway.
+		return nal, decoder.Error()
 	}
-
+	copy := reflect.New(reflect.Indirect(reflect.ValueOf(prototype)).Type()).Interface()
+	payload, ok := copy.(NalPayload)
+	if !ok {
+		return nil, fmt.Errorf("invalid registered type %T does not implement NalPayload interface", prototype)
+	}
+	payload.Read(decoder)
+	nal.Payload = payload
 	return nal, decoder.Error()
 }

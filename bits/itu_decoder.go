@@ -187,6 +187,7 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 	default:
 		return fmt.Errorf("field %v: descriptor type %v is invalid", name, descriptorType)
 	}
+	// fmt.Printf("Setting %s (%s) to %v\n", name, descriptor, val)
 	return nil
 }
 
