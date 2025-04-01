@@ -1,5 +1,7 @@
 package bits
 
+import "io"
+
 type ItuReader struct {
 	Reader
 }
@@ -54,4 +56,9 @@ func (r *ItuReader) SE() (int64, error) {
 		return -int64(ueVal / 2), nil
 	}
 	return int64((ueVal + 1) / 2), nil
+}
+
+func (r *ItuReader) MoreDataInByteStream() bool {
+	_, err := r.NextBits(8)
+	return err != io.EOF
 }

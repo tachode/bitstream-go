@@ -1,6 +1,7 @@
 package h264
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"reflect"
@@ -31,7 +32,16 @@ func Parse(buffer []byte) (*NalUnit, error) {
 		return nil, err
 	}
 
-	reader = &bits.ReadBuffer{Reader: bytes.NewBuffer(nal.RbspByte)}
+	// Create a slice with the trailing zeros removed
+	nalUnitBuffer := nal.RbspByte
+	for len(nalUnitBuffer) > 0 && nalUnitBuffer[len(nalUnitBuffer)-1] == 0 {
+		nalUnitBuffer = nalUnitBuffer[:len(nalUnitBuffer)-1]
+	}
+
+	// In order to implement several H.264 functions, parsing of RBSP payload
+	// need to be buffered. The functions that require this are more_rbsp_data()
+	// more_rbsp_trailing_data(), and next_bits().
+	reader = &bits.ReadBuffer{Reader: bufio.NewReader(bytes.NewBuffer(nalUnitBuffer))}
 	ituReader = &bits.ItuReader{Reader: reader}
 	decoder = bits.NewItuDecoder(ituReader)
 

@@ -1,6 +1,7 @@
 package bits_test
 
 import (
+	"bufio"
 	"bytes"
 	"io"
 	"testing"
@@ -82,5 +83,83 @@ func TestReadBuffer_ReadInvalidBits(t *testing.T) {
 	_, err = readBuffer.ReadBits(65)
 	if err != io.ErrShortBuffer {
 		t.Errorf("expected io.ErrShortBuffer, got %v", err)
+	}
+}
+
+func TestReadBuffer_MoreRbspData_1(t *testing.T) {
+	data := []byte{0b10101010, 0b00000001, 0b10000000} // RBSP data with stop bit
+	reader := bufio.NewReader(bytes.NewReader(data))
+	readBuffer := &bits.ReadBuffer{Reader: reader}
+
+	// Read some bits to simulate partial consumption
+	_, err := readBuffer.ReadBits(8)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check if there's more RBSP data
+	if !readBuffer.MoreRbspData() {
+		t.Errorf("expected more RBSP data, but got false")
+	}
+
+	// Consume all remaining bits except one
+	_, err = readBuffer.ReadBits(7)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check if there's more RBSP data
+	if !readBuffer.MoreRbspData() {
+		t.Errorf("expected more RBSP data, but got false")
+	}
+
+	// Consume final bit
+	_, err = readBuffer.ReadBits(1)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check again after consuming all data
+	if readBuffer.MoreRbspData() {
+		t.Errorf("expected no more RBSP data, but got true")
+	}
+}
+
+func TestReadBuffer_MoreRbspData_2(t *testing.T) {
+	data := []byte{0b10101010, 0b00000000, 0b10000000} // RBSP data with stop bit
+	reader := bufio.NewReader(bytes.NewReader(data))
+	readBuffer := &bits.ReadBuffer{Reader: reader}
+
+	// Read some bits to simulate partial consumption
+	_, err := readBuffer.ReadBits(8)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check if there's more RBSP data
+	if !readBuffer.MoreRbspData() {
+		t.Errorf("expected more RBSP data, but got false")
+	}
+
+	// Consume all remaining bits except one
+	_, err = readBuffer.ReadBits(7)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check if there's more RBSP data
+	if !readBuffer.MoreRbspData() {
+		t.Errorf("expected more RBSP data, but got false")
+	}
+
+	// Consume final bit
+	_, err = readBuffer.ReadBits(1)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// Check again after consuming all data
+	if readBuffer.MoreRbspData() {
+		t.Errorf("expected no more RBSP data, but got true")
 	}
 }
