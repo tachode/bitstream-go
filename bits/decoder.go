@@ -9,4 +9,9 @@ type Decoder interface {
 	DecodeIndex(v any, field string, i int) error
 	Value(name string) any
 	Error() error
+
+	// Functions from H.264, §7.2
+	ByteAligned() bool
+	MoreRbspData() bool
+	NextBits(bits int) uint64
 }

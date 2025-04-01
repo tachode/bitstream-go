@@ -72,9 +72,8 @@ func (e *PicParameterSet) Read(d bits.Decoder) error {
 	d.Decode(e, "DeblockingFilterControlPresentFlag")
 	d.Decode(e, "ConstrainedIntraPredFlag")
 	d.Decode(e, "RedundantPicCntPresentFlag")
-	more_rbsp_data := func() bool { return false } // TODO -- get from decoder
 	chromaFormatIdc, _ := d.Value("ChromaFormatIdc").(uint64)
-	if more_rbsp_data() {
+	if d.MoreRbspData() {
 		d.Decode(e, "Transform8x8ModeFlag")
 		d.Decode(e, "PicScalingMatrixPresentFlag")
 		if e.PicScalingMatrixPresentFlag {
