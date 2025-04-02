@@ -6,3 +6,24 @@ effort and margin for error in parsing by performing, as much as possible,
 a mechanical conversion between the formal definition for syntax elements
 and their actual implementation. We're also using Go struct tags to indicate
 encoding syntax, to assist with the process.
+
+## Progress
+- ☐ CodedSliceNonIdr
+- ☐ CodedSliceDataPartitionA
+- ☐ CodedSliceDataPartitionB
+- ☐ CodedSliceDataPartitionC
+- ☐ CodedSliceIdr
+- ☐ SEI
+- 🗹 SPS
+- 🗹 PPS
+- 🗹 AUD
+- ☐ EndOfSequence
+- ☐ EndOfStream
+- ☐ Filler
+- ☐ SpsExt
+- ☐ PrefixNalUnit
+- ☐ SubsetSeqParameterSet
+- ☐ DepthParameterSet
+- ☐ CodedSliceAux
+- ☐ CodedSliceExtension
+- ☐ CodedSliceExtension3D
