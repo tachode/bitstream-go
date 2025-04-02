@@ -77,19 +77,15 @@ func (e *PicParameterSet) Read(d bits.Decoder) error {
 		d.Decode(e, "Transform8x8ModeFlag")
 		d.Decode(e, "PicScalingMatrixPresentFlag")
 		if e.PicScalingMatrixPresentFlag {
+			e.ScalingList = &ScalingList{}
 			for i := 0; i < 6+(If(chromaFormatIdc != 3, 2, 6))*If(e.Transform8x8ModeFlag, 1, 0); i++ {
 				d.DecodeIndex(e, "PicScalingListPresentFlag", i)
 				if e.PicScalingListPresentFlag[i] {
-					panic("scaling lists not yet implemented")
-					/* TODO
-					   if i < 6 {
-					       e.ScalingList = &ScalingList{}
-					       e.ScalingList.Read(d, ScalingList4x4[i], 16, UseDefaultScalingMatrix4x4Flag[i])
-					   } else {
-					       e.ScalingList = &ScalingList{}
-					       e.ScalingList.Read(d, ScalingList8x8[i−6], 64, UseDefaultScalingMatrix8x8Flag[i−6])
-					   }
-					*/
+					if i < 6 {
+						e.ScalingList.Read(d, i, 16)
+					} else {
+						e.ScalingList.Read(d, i, 64)
+					}
 				}
 			}
 		}

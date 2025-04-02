@@ -13,5 +13,5 @@ type Decoder interface {
 	// Functions from H.264, §7.2
 	ByteAligned() bool
 	MoreRbspData() bool
-	NextBits(bits int) uint64
+	NextBits(bits int) (uint64, error)
 }

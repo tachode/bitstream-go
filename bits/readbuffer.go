@@ -11,6 +11,7 @@ type Reader interface {
 	ReadBits(bits int) (uint64, error)
 	NextBits(bits int) (uint64, error)
 	ByteAligned() bool
+	MoreRbspData() bool
 	Align() error
 }
 

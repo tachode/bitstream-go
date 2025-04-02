@@ -41,6 +41,8 @@ while (<>) {
             $type_params = join(", ", @type_params);
         }
     } elsif (/^( *)([^ ]*)(\[[^\]]*\])? (All|0|1|2|3) ([a-z]+\([^ ]+\))(=.*)?/) {    
+        # This is the definition of a variable -- we add a corresponding field to the
+        # struct and add code to decode it to the Read() function
         ($indent, $name, $index, $descriptor, $extra) = ($1, $2, $3, $5, $6);
         $snake_name = $name;
         $name = camel_case($name);
@@ -55,6 +57,7 @@ while (<>) {
         }
         $struct .= "    $name   $type   `descriptor:\"$descriptor$extra\" json:\"$snake_name\"`\n";
     } elsif (/^( *)(while|do|if|else|for|\})/) {
+        # Handle control blocks
         $indent = $1;
         foreach my $key (keys %name_map) {
             s/\b$key\b/e.$name_map{$key}/g;
@@ -70,6 +73,7 @@ while (<>) {
 
         $read_func .= "$_\n";
     } elsif (/^( *)([a-z0-9_]*)\((.*?)\)/) {
+        # Handle function calls
         ($indent, $substructure, $params) = ($1, $2, $3);
         $snake_name = $substructure;
         $substructure = camel_case($substructure);
@@ -88,7 +92,9 @@ while (<>) {
 
 }
 
+# Fix up the Read() function and give it a return value
 $read_func =~ s/}\n *else/} else/gom;
+$read_func =~ s/(byte_aligned|more_rbsp_data|next_bits)/"e".camel_case($1)/gome;
 $read_func =~ s/(}[\r\n]*)$/    return d.Error()\n$1/gos;
 
 print "package h264\n\nimport \"github.com/tachode/bitstream-go/bits\"\n\ntype $type_name struct {\n$struct}\n";

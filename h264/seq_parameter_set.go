@@ -68,26 +68,15 @@ func (e *SeqParameterSet) Read(d bits.Decoder) error {
 		d.Decode(e, "QpprimeYZeroTransformBypassFlag")
 		d.Decode(e, "SeqScalingMatrixPresentFlag")
 		if e.SeqScalingMatrixPresentFlag {
-			len := 0
-			if e.ChromaFormatIdc != 3 {
-				len = 8
-			} else {
-				len = 12
-			}
-			for i := 0; i < len; i++ {
+			e.ScalingList = &ScalingList{}
+			for i := 0; i < 6+(If(e.ChromaFormatIdc != 3, 8, 12)); i++ {
 				d.DecodeIndex(e, "SeqScalingListPresentFlag", i)
 				if e.SeqScalingListPresentFlag[i] {
-					panic("scaling lists not implemented yet")
-					// TODO -- add these fields, adapt ScalingList to provide output parameters, don't store in e
-					/*
-					   if i < 6 {
-					       e.ScalingList = &ScalingList{}
-					       e.ScalingList.Read(d, ScalingList4x4[i], 16, UseDefaultScalingMatrix4x4Flag[i])
-					   } else {
-					       e.ScalingList = &ScalingList{}
-					       e.ScalingList.Read(d, ScalingList8x8[i−6], 64, UseDefaultScalingMatrix8x8Flag[i−6])
-					   }
-					*/
+					if i < 6 {
+						e.ScalingList.Read(d, i, 16)
+					} else {
+						e.ScalingList.Read(d, i, 64)
+					}
 				}
 			}
 		}
