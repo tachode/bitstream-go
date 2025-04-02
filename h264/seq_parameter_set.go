@@ -75,7 +75,7 @@ func (e *SeqParameterSet) Read(d bits.Decoder) error {
 					if i < 6 {
 						e.ScalingList.Read(d, i, 16)
 					} else {
-						e.ScalingList.Read(d, i, 64)
+						e.ScalingList.Read(d, i-6, 64)
 					}
 				}
 			}
