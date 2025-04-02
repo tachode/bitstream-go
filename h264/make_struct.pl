@@ -40,7 +40,7 @@ while (<>) {
             unshift(@type_params, "d bits.Decoder");
             $type_params = join(", ", @type_params);
         }
-    } elsif (/^( *)([^ ]*)(\[[^\]]*\])? (All|0|1|2|3) ([a-z]+\([^ ]+\))(=.*)?/) {    
+    } elsif (/^( *)([^ ]*)(\[[^\]]*\])? (All|\d+) ([a-z]+\([^ ]+\))(=.*)?/) {    
         # This is the definition of a variable -- we add a corresponding field to the
         # struct and add code to decode it to the Read() function
         ($indent, $name, $index, $descriptor, $extra) = ($1, $2, $3, $5, $6);
@@ -71,6 +71,7 @@ while (<>) {
             push(@brackets, $indent);
         } 
 
+        s/while/for/;
         $read_func .= "$_\n";
     } elsif (/^( *)([a-z0-9_]*)\((.*?)\)/) {
         # Handle function calls
@@ -94,10 +95,12 @@ while (<>) {
 
 # Fix up the Read() function and give it a return value
 $read_func =~ s/}\n *else/} else/gom;
-$read_func =~ s/(byte_aligned|more_rbsp_data|next_bits)/"e".camel_case($1)/gome;
+$read_func =~ s/(byte_aligned|more_rbsp_data|next_bits)/"d.".camel_case($1)/gome;
 $read_func =~ s/(}[\r\n]*)$/    return d.Error()\n$1/gos;
 
-print "package h264\n\nimport \"github.com/tachode/bitstream-go/bits\"\n\ntype $type_name struct {\n$struct}\n";
+print "package h264\n\nimport \"github.com/tachode/bitstream-go/bits\"\n\n";
+print "func init() { RegisterNalPayload(NalUnitTypeTODO, &${type_name}{}) }\n\n";
+print "type $type_name struct {\n$struct}\n";
 print "\nfunc (e *$type_name) Read($type_params) error {\n$read_func\n";
 
 sub camel_case {

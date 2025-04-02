@@ -1,0 +1,11 @@
+seq_parameter_set_extension( ) {
+    seq_parameter_set_id 10 ue(v)
+    aux_format_idc 10 ue(v)
+    if( aux_format_idc != 0 ) {
+        bit_depth_aux_minus8 10 ue(v)
+        alpha_incr_flag 10 u(1)
+        alpha_opaque_value 10 u(v)
+        alpha_transparent_value 10 u(v)
+    }
+    additional_extension_flag 10 u(1)
+}

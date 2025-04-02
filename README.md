@@ -17,10 +17,10 @@ encoding syntax, to assist with the process.
 - 🗹 SPS
 - 🗹 PPS
 - 🗹 AUD
-- ☐ EndOfSequence
-- ☐ EndOfStream
-- ☐ Filler
-- ☐ SpsExt
+- 🗹 EndOfSequence
+- 🗹 EndOfStream
+- 🗹 Filler
+- 🗹 SpsExt
 - ☐ PrefixNalUnit
 - ☐ SubsetSeqParameterSet
 - ☐ DepthParameterSet

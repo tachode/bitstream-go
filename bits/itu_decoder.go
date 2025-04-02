@@ -191,9 +191,12 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 	return nil
 }
 
-func (d *ItuDecoder) ByteAligned() bool                 { return d.reader.ByteAligned() }
-func (d *ItuDecoder) MoreRbspData() bool                { return d.reader.MoreRbspData() }
-func (d *ItuDecoder) NextBits(bits int) (uint64, error) { return d.reader.NextBits(bits) }
+func (d *ItuDecoder) ByteAligned() bool  { return d.reader.ByteAligned() }
+func (d *ItuDecoder) MoreRbspData() bool { return d.reader.MoreRbspData() }
+func (d *ItuDecoder) NextBits(bits int) uint64 {
+	val, _ := d.reader.NextBits(bits)
+	return val
+}
 
 func parseDescriptor(descriptor string) (typ string, length int, fixedValue uint64, err error) {
 	f := func(c rune) bool { return !unicode.IsLetter(c) && !unicode.IsNumber(c) }
