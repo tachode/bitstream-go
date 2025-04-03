@@ -1,0 +1,17 @@
+parallel_decoding_info( payloadSize ) { 
+    seq_parameter_set_id 5 ue(v)
+    for( i = 1; i <= num_views_minus1; i++ ) {
+        if( anchor_pic_flag ) {
+            for( j = 0; j <= num_anchor_refs_l0[ i ]; j++ )
+                pdi_init_delay_anchor_minus2_l0[ i ][ j ] 5 ue(v)
+            for( j = 0; j <= num_anchor_refs_l1[ i ]; j++ )
+                pdi_init_delay_anchor_minus2_l1[ i ][ j ] 5 ue(v)
+        }
+        else {
+            for( j = 0; j <= num_non_anchor_refs_l0[ i ]; j++ )
+                pdi_init_delay_non_anchor_minus2_l0[ i ][ j ] 5 ue(v)
+            for( j = 0; j <= num_non_anchor_refs_l1[ i ]; j++ )
+                pdi_init_delay_non_anchor_minus2_l1[ i ][ j ] 5 ue(v)
+        }
+    }
+}

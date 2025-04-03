@@ -1,0 +1,24 @@
+frame_packing_arrangement( payloadSize ) { 
+    frame_packing_arrangement_id 5 ue(v)
+    frame_packing_arrangement_cancel_flag 5 u(1)
+    if( !frame_packing_arrangement_cancel_flag ) {
+        frame_packing_arrangement_type 5 u(7)
+        quincunx_sampling_flag 5 u(1)
+        content_interpretation_type 5 u(6)
+        spatial_flipping_flag 5 u(1)
+        frame0_flipped_flag 5 u(1)
+        field_views_flag 5 u(1)
+        current_frame_is_frame0_flag 5 u(1)
+        frame0_self_contained_flag 5 u(1)
+        frame1_self_contained_flag 5 u(1)
+        if( !quincunx_sampling_flag && frame_packing_arrangement_type != 5 ) {
+            frame0_grid_position_x 5 u(4)
+            frame0_grid_position_y 5 u(4)
+            frame1_grid_position_x 5 u(4)
+            frame1_grid_position_y 5 u(4)
+        }
+        frame_packing_arrangement_reserved_byte 5 u(8)
+        frame_packing_arrangement_repetition_period 5 ue(v)
+    }
+    frame_packing_arrangement_extension_flag 5 u(1)
+}

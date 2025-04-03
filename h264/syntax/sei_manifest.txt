@@ -1,0 +1,7 @@
+sei_manifest( payloadSize ) {
+    manifest_num_sei_msg_types 5 u(16)
+    for( i = 0; i < manifest_num_sei_msg_types; i++ ) {
+        manifest_sei_payload_type[ i ] 5 u(16)
+        manifest_sei_description[ i ] 5 u(8)
+    }
+}

@@ -1,0 +1,17 @@
+sei_message( ) { 
+    payloadType = 0
+    while( next_bits( 8 ) = = 0xFF ) {
+        ff_byte /* equal to 0xFF */ 5 f(8)=255
+        payloadType += 255
+    }
+    last_payload_type_byte 5 u(8)
+    payloadType += last_payload_type_byte
+    payloadSize = 0
+    while( next_bits( 8 ) = = 0xFF ) {
+        ff_byte /* equal to 0xFF */ 5 f(8)=255
+        payloadSize += 255
+    }
+    last_payload_size_byte 5 u(8)
+    payloadSize += last_payload_size_byte
+    sei_payload( payloadType, payloadSize ) 5
+}

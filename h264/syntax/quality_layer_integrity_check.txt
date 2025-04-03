@@ -1,0 +1,7 @@
+quality_layer_integrity_check( payloadSize ) {
+    num_info_entries_minus1 5 ue(v)
+    for( i = 0; i <= num_info_entries_minus1; i++ ) {
+        entry_dependency_id[ i ] 5 u(3)
+        quality_layer_crc[ i ] 5 u(16)
+    }
+}

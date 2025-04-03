@@ -1,0 +1,9 @@
+scene_info( payloadSize ) {
+    scene_info_present_flag 5 u(1)
+    if( scene_info_present_flag ) {
+        scene_id 5 ue(v)
+        scene_transition_type 5 ue(v)
+        if( scene_transition_type > 3 )
+            second_scene_id 5 ue(v)
+    }
+}

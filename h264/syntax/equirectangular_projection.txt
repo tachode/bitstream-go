@@ -1,0 +1,12 @@
+equirectangular_projection( payloadSize ) { 
+    erp_cancel_flag 5 u(1)
+    if( !erp_cancel_flag )
+        erp_persistence_flag 5 u(1)
+    erp_padding_flag 5 u(1)
+    erp_reserved_zero_2bits 5 u(2)
+    if( erp_padding_flag = = 1 ) {
+        gp_erp_type 5 u(3)
+        left_gb_erp_width 5 u(8)
+        right_gb_erp_width 5 u(8)
+    }
+}

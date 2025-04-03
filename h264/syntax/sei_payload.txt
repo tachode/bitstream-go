@@ -1,0 +1,153 @@
+sei_payload( payloadType, payloadSize ) { 
+    if( payloadType = = 0 )
+        buffering_period( payloadSize ) 5
+    else if( payloadType = = 1 )
+        pic_timing( payloadSize ) 5
+    else if( payloadType = = 2 )
+        pan_scan_rect( payloadSize ) 5
+    else if( payloadType = = 3 )
+        filler_payload( payloadSize ) 5
+    else if( payloadType = = 4 )
+        user_data_registered_itu_t_t35( payloadSize ) 5
+    else if( payloadType = = 5 )
+        user_data_unregistered( payloadSize ) 5
+    else if( payloadType = = 6 )
+        recovery_point( payloadSize ) 5
+    else if( payloadType = = 7 )
+        dec_ref_pic_marking_repetition( payloadSize ) 5
+    else if( payloadType = = 8 )
+        spare_pic( payloadSize ) 5
+    else if( payloadType = = 9 )
+        scene_info( payloadSize ) 5
+    else if( payloadType = = 10 )
+        sub_seq_info( payloadSize ) 5
+    else if( payloadType = = 11 )
+        sub_seq_layer_characteristics( payloadSize ) 5
+    else if( payloadType = = 12 )
+        sub_seq_characteristics( payloadSize ) 5
+    else if( payloadType = = 13 )
+        full_frame_freeze( payloadSize ) 5
+    else if( payloadType = = 14 )
+        full_frame_freeze_release( payloadSize ) 5
+    else if( payloadType = = 15 )
+        full_frame_snapshot( payloadSize ) 5
+    else if( payloadType = = 16 )
+        progressive_refinement_segment_start( payloadSize ) 5
+    else if( payloadType = = 17 )
+        progressive_refinement_segment_end( payloadSize ) 5
+    else if( payloadType = = 18 )
+        motion_constrained_slice_group_set( payloadSize ) 5
+    else if( payloadType = = 19 )
+        film_grain_characteristics( payloadSize ) 5
+    else if( payloadType = = 20 )
+        deblocking_filter_display_preference( payloadSize ) 5
+    else if( payloadType = = 21 )
+        stereo_video_info( payloadSize ) 5
+    else if( payloadType = = 22 )
+        post_filter_hint( payloadSize ) 5
+    else if( payloadType = = 23 )
+        tone_mapping_info( payloadSize ) 5
+    else if( payloadType = = 24 )
+        scalability_info( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 25 )
+        sub_pic_scalable_layer( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 26 )
+        non_required_layer_rep( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 27 )
+        priority_layer_info( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 28 )
+        layers_not_present( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 29 )
+        layer_dependency_change( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 30 )
+        scalable_nesting( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 31 )
+        base_layer_temporal_hrd( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 32 )
+        quality_layer_integrity_check( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 33 )
+        redundant_pic_property( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 34 )
+        tl0_dep_rep_index( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 35 )
+        tl_switching_point( payloadSize ) /* specified in Annex G */ 5
+    else if( payloadType = = 36 )
+        parallel_decoding_info( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 37 )
+        mvc_scalable_nesting( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 38 )
+        view_scalability_info( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 39 )
+        multiview_scene_info( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 40 )
+        multiview_acquisition_info( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 41 )
+        non_required_view_component( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 42 )
+        view_dependency_change( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 43 )
+        operation_points_not_present( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 44 )
+        base_view_temporal_hrd( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 45 )
+        frame_packing_arrangement( payloadSize ) 5
+    else if( payloadType = = 46 )
+        multiview_view_position( payloadSize ) /* specified in Annex H */ 5
+    else if( payloadType = = 47 )
+        display_orientation( payloadSize ) 5
+    else if( payloadType = = 48 )
+        mvcd_scalable_nesting( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 49 )
+        mvcd_view_scalability_info( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 50 )
+        depth_representation_info( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 51 )
+        three_dimensional_reference_displays_info( payloadSize ) 5 /* specified in Annex I */
+    else if( payloadType = = 52 )
+        depth_timing( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 53 )
+        depth_sampling_info( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 54 )
+        constrained_depth_parameter_set_identifier( payloadSize ) /* specified in Annex J */ 5
+    else if( payloadType = = 56 )
+        green_metadata( payloadSize ) /* specified in ISO/IEC 23001-11 */ 5
+    else if( payloadType = = 137 )
+        mastering_display_colour_volume( payloadSize ) 5
+    else if( payloadType = = 142 )
+        colour_remapping_info( payloadSize ) 5
+    else if( payloadType = = 144 )
+        content_light_level_info( payloadSize ) 5
+    else if( payloadType = = 147 )
+        alternative_transfer_characteristics( payloadSize ) 5
+    else if( payloadType = = 148 )
+        ambient_viewing_environment( payloadSize ) 5
+    else if( payloadType = = 149 )
+        content_colour_volume( payloadSize ) 5
+    else if( payloadType = = 150 )
+        equirectangular_projection( payloadSize ) 5
+    else if( payloadType = = 151 )
+        cubemap_projection( payloadSize ) 5
+    else if( payloadType = = 154 )
+        sphere_rotation( payloadSize ) 5
+    else if( payloadType = = 155 )
+        regionwise_packing( payloadSize ) 5
+    else if( payloadType = = 156 )
+        omni_viewport( payloadSize ) 5
+    else if( payloadType = = 181 )
+        alternative_depth_info( payloadSize ) /* specified in Annex I */ 5
+    else if( payloadType = = 200 )
+        sei_manifest( payloadSize ) 5
+    else if( payloadType = = 201 )
+        sei_prefix_indication( payloadSize ) 5
+    else if( payloadType = = 202 )
+        annotated_regions( payloadSize ) 5
+    else if( payloadType = = 205 )
+        shutter_interval_info( payloadSize ) 5
+    else
+        reserved_sei_message( payloadSize ) 5
+    if( !byte_aligned( ) ) {
+        bit_equal_to_one /* equal to 1 */ 5 f(1)=1
+        while( !byte_aligned( ) )
+            bit_equal_to_zero /* equal to 0 */ 5 f(1)=0
+    }
+}

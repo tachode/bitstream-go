@@ -1,0 +1,58 @@
+alternative_depth_info( payloadSize ) {
+    depth_type 5 ue(v)
+    if( depth_type = = 0 ) {
+        num_constituent_views_gvd_minus1 5 ue(v)
+        depth_present_gvd_flag 5 u(1)
+        z_gvd_flag 5 u(1)
+        intrinsic_param_gvd_flag 5 u(1)
+        rotation_gvd_flag 5 u(1)
+        translation_gvd_flag 5 u(1)
+        if( z_gvd_flag )
+            for( i = 0; i <= num_constituent_views_gvd_minus1 + 1; i++ ) {
+                sign_gvd_z_near_flag[ i ] 5 u(1)
+                exp_gvd_z_near[ i ] 5 u(7)
+                man_len_gvd_z_near_minus1[ i ] 5 u(5)
+                man_gvd_z_near[ i ] 5 u(v)
+                sign_gvd_z_far_flag[ i ] 5 u(1)
+                exp_gvd_z_far[ i ] 5 u(7)
+                man_len_gvd_z_far_minus1[ i ] 5 u(5)
+                man_gvd_z_far[ i ] 5 u(v)
+            }
+        if( intrinsic_param_gvd_flag ) {
+            prec_gvd_focal_length 5 ue(v)
+            prec_gvd_principal_point 5 ue(v)
+        }
+        if( rotation_gvd_flag )
+            prec_gvd_rotation_param 5 ue(v)
+        if( translation_gvd_flag )
+            prec_gvd_translation_param 5 ue(v)
+        for( i = 0; i <= num_constituent_views_gvd_minus1 + 1; i++ ) {
+            if( intrinsic_param_gvd_flag ) {
+                sign_gvd_focal_length_x[ i ] 5 u(1)
+                exp_gvd_focal_length_x[ i ] 5 u(6)
+                man_gvd_focal_length_x[ i ] 5 u(v)
+                sign_gvd_focal_length_y[ i ] 5 u(1)
+                exp_gvd_focal_length_y[ i ] 5 u(6)
+                man_gvd_focal_length_y[ i ] 5 u(v)
+                sign_gvd_principal_point_x[ i ] 5 u(1)
+                exp_gvd_principal_point_x[ i ] 5 u(6)
+                man_gvd_principal_point_x[ i ] 5 u(v)
+                sign_gvd_principal_point_y[ i ] 5 u(1)
+                exp_gvd_principal_point_y[ i ] 5 u(6)
+                man_gvd_principal_point_y[ i ] 5 u(v)
+            }
+            if( rotation_gvd_flag )
+                for( j = 0; j < 3; j++ ) /* row */
+                    for( k = 0; k < 3; k++ ) { /* column */
+                        sign_gvd_r[ i ][ j ][ k ] 5 u(1)
+                        exp_gvd_r[ i ][ j ][ k ] 5 u(6)
+                        man_gvd_r[ i ][ j ][ k ] 5 u(v)
+                    }
+            if( translation_gvd_flag ) {
+                sign_gvd_t_x[ i ] 5 u(1)
+                exp_gvd_t_x[ i ] 5 u(6)
+                man_gvd_t_x[ i ] 5 u(v)
+            }
+        }
+    }
+}

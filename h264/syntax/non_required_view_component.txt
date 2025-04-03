@@ -1,0 +1,9 @@
+non_required_view_component( payloadSize ) { 
+    num_info_entries_minus1 5 ue(v)
+    for( i = 0; i <= num_info_entries_minus1; i++ ) {
+        view_order_index[ i ] 5 ue(v)
+        num_non_required_view_components_minus1[ i ] 5 ue(v)
+        for( j = 0; j <= num_non_required_view_components_minus1[ i ]; j++ )
+            index_delta_minus1[ i ][ j ] 5 ue(v)
+    }
+}

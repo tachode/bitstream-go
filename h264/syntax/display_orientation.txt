@@ -1,0 +1,10 @@
+display_orientation( payloadSize ) { 
+    display_orientation_cancel_flag 5 u(1)
+    if( !display_orientation_cancel_flag ) {
+        hor_flip 5 u(1)
+        ver_flip 5 u(1)
+        anticlockwise_rotation 5 u(16)
+        display_orientation_repetition_period 5 ue(v)
+        display_orientation_extension_flag 5 u(1)
+    }
+}

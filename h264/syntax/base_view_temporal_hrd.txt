@@ -1,0 +1,21 @@
+base_view_temporal_hrd( payloadSize ) { 
+    num_of_temporal_layers_in_base_view_minus1 5 ue(v)
+    for( i = 0; i <= num_of_temporal_layers_in_base_view_minus1; i++ ) {
+        sei_mvc_temporal_id[ i ] 5 u(3)
+        sei_mvc_timing_info_present_flag[ i ] 5 u(1)
+        if( sei_mvc_timing_info_present_flag[ i ] ) {
+            sei_mvc_num_units_in_tick[ i ] 5 u(32)
+            sei_mvc_time_scale[ i ] 5 u(32)
+            sei_mvc_fixed_frame_rate_flag[ i ] 5 u(1)
+        }
+        sei_mvc_nal_hrd_parameters_present_flag[ i ] 5 u(1)
+        if( sei_mvc_nal_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 5
+        sei_mvc_vcl_hrd_parameters_present_flag[ i ] 5 u(1)
+        if( sei_mvc_vcl_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 5
+        if( sei_mvc_nal_hrd_parameters_present_flag[ i ] | | sei_mvc_vcl_hrd_parameters_present_flag[ i ] )
+            sei_mvc_low_delay_hrd_flag[ i ] 5 u(1)
+        sei_mvc_pic_struct_present_flag[ i ] 5 u(1)
+    }
+}

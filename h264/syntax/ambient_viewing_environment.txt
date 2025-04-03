@@ -1,0 +1,5 @@
+ambient_viewing_environment( payloadSize ) { 
+    ambient_illuminance 5 u(32)
+    ambient_light_x 5 u(16)
+    ambient_light_y 5 u(16)
+}

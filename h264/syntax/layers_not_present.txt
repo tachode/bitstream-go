@@ -1,0 +1,6 @@
+layers_not_present( payloadSize ) {
+    num_layers 5 ue(v)
+    for( i = 0; i < num_layers; i++ ) {
+        layer_id[ i ] 5 ue(v)
+    }
+}

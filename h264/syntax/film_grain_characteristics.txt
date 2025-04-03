@@ -1,0 +1,31 @@
+film_grain_characteristics( payloadSize ) { 
+    film_grain_characteristics_cancel_flag 5 u(1)
+    if( !film_grain_characteristics_cancel_flag ) {
+        film_grain_model_id 5 u(2)
+        separate_colour_description_present_flag 5 u(1)
+        if( separate_colour_description_present_flag ) {
+            film_grain_bit_depth_luma_minus8 5 u(3)
+            film_grain_bit_depth_chroma_minus8 5 u(3)
+            film_grain_full_range_flag 5 u(1)
+            film_grain_colour_primaries 5 u(8)
+            film_grain_transfer_characteristics 5 u(8)
+            film_grain_matrix_coefficients 5 u(8)
+        }
+        blending_mode_id 5 u(2)
+        log2_scale_factor 5 u(4)
+        for( c = 0; c < 3; c++ )
+            comp_model_present_flag[ c ] 5 u(1)
+        for( c = 0; c < 3; c++ )
+            if( comp_model_present_flag[ c ] ) {
+                num_intensity_intervals_minus1[ c ] 5 u(8)
+                num_model_values_minus1[ c ] 5 u(3)
+                for( i = 0; i <= num_intensity_intervals_minus1[ c ]; i++ ) {
+                    intensity_interval_lower_bound[ c ][ i ] 5 u(8)
+                    intensity_interval_upper_bound[ c ][ i ] 5 u(8)
+                    for( j = 0; j <= num_model_values_minus1[ c ]; j++ )
+                    comp_model_value[ c ][ i ][ j ] 5 se(v)
+                }
+            }
+        film_grain_characteristics_repetition_period 5 ue(v)
+    }
+}

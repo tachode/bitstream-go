@@ -1,0 +1,36 @@
+regionwise_packing( payloadSize ) { 
+    rwp_cancel_flag 5 u(1)
+    if( !rwp_cancel_flag ) {
+        rwp_persistence_flag 5 u(1)
+        constituent_picture_matching_flag 5 u(1)
+        rwp_reserved_zero_5bits 5 u(5)
+        num_packed_regions 5 u(8)
+        proj_picture_width 5 u(32)
+        proj_picture_height 5 u(32)
+        packed_picture_width 5 u(16)
+        packed_picture_height 5 u(16)
+        for( i = 0; i < num_packed_regions; i++ ) {
+            rwp_reserved_zero_4bits[ i ] 5 u(4)
+            transform_type[ i ] 5 u(3)
+            guard_band_flag[ i ] 5 u(1)
+            proj_region_width[ i ] 5 u(32)
+            proj_region_height[ i ] 5 u(32)
+            proj_region_top[ i ] 5 u(32)
+            proj_region_left[ i ] 5 u(32)
+            packed_region_width[ i ] 5 u(16)
+            packed_region_height[ i ] 5 u(16)
+            packed_region_top[ i ] 5 u(16)
+            packed_region_left[ i ] 5 u(16)
+            if( guard_band_flag[ i ] ) {
+                left_gb_width[ i ] 5 u(8)
+                right_gb_width[ i ] 5 u(8)
+                top_gb_height[ i ] 5 u(8)
+                bottom_gb_height[ i ] 5 u(8)
+                gb_not_used_for_pred_flag[ i ] 5 u(1)
+                for( j = 0; j < 4; j++ )
+                    gb_type[ i ][ j ] 5 u(3)
+                rwp_gb_reserved_zero_3bits[ i ] 5 u(3)
+            }
+        }
+    }
+}

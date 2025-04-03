@@ -1,0 +1,11 @@
+stereo_video_info( payloadSize ) {
+    field_views_flag 5 u(1)
+    if( field_views_flag )
+        top_field_is_left_view_flag 5 u(1)
+    else {
+        current_frame_is_left_view_flag 5 u(1)
+        next_frame_is_second_view_flag 5 u(1)
+    }
+    left_view_self_contained_flag 5 u(1)
+    right_view_self_contained_flag 5 u(1)
+}

@@ -1,0 +1,60 @@
+annotated_regions( payloadSize ) { 
+    ar_cancel_flag 5 u(1)
+    if( !ar_cancel_flag ) {
+        ar_not_optimized_for_viewing_flag 5 u(1)
+        ar_true_motion_flag 5 u(1)
+        ar_occluded_object_flag 5 u(1)
+        ar_partial_object_flag_present_flag 5 u(1)
+        ar_object_label_present_flag 5 u(1)
+        ar_object_confidence_info_present_flag 5 u(1)
+        if( ar_object_confidence_info_present_flag )
+            ar_object_confidence_length_minus1 5 u(4)
+        if( ar_object_label_present_flag ) {
+            ar_object_label_language_present_flag 5 u(1)
+            if( ar_object_label_language_present_flag ) {
+                while( !byte_aligned( ) )
+                ar_bit_equal_to_zero /* equal to 0 */ 5 f(1)
+                ar_object_label_language 5 st(v)
+            }
+            ar_num_label_updates 5 ue(v)
+            for( i = 0; i < ar_num_label_updates; i++ ) {
+                ar_label_idx[ i ] 5 ue(v)
+                ar_label_cancel_flag 5 u(1)
+                LabelAssigned[ ar_label_idx[ i ] ] = !ar_label_cancel_flag
+                if( !ar_label_cancel_flag ) {
+                    while( !byte_aligned( ) )
+                    ar_bit_equal_to_zero /* equal to 0 */ 5 f(1)
+                    ar_label[ ar_label_idx[ i ] ] 5 st(v)
+                }
+            }
+        }
+        ar_num_object_updates 5 ue(v)
+        for( i = 0; i < ar_num_object_updates; i++ ) {
+            ar_object_idx[ i ] 5 ue(v)
+            ar_object_cancel_flag 5 u(1)
+            ObjectTracked[ ar_object_idx[ i ] ] = !ar_object_cancel_flag
+            if( !ar_object_cancel_flag ) {
+                if( ar_object_label_present_flag ) {
+                    ar_object_label_update_flag 5 u(1)
+                    if( ar_object_label_update_flag )
+                        ar_object_label_idx[ ar_object_idx[ i ] ] 5 ue(v)
+                }
+                ar_bounding_box_update_flag 5 u(1)
+                if( ar_bounding_box_update_flag ) {
+                    ar_bounding_box_cancel_flag 5 u(1)
+                    ObjectBoundingBoxAvail[ ar_object_idx[ i ] ] = !ar_bounding_box_cancel_flag
+                    if( !ar_bounding_box_cancel_flag ) {
+                        ar_bounding_box_top[ ar_object_idx[ i ] ] 5 u(16)
+                        ar_bounding_box_left[ ar_object_idx[ i ] ] 5 u(16)
+                        ar_bounding_box_width[ ar_object_idx[ i ] ] 5 u(16)
+                        ar_bounding_box_height[ ar_object_idx[ i ] ] 5 u(16)
+                        if( ar_partial_object_flag_present_flag )
+                            ar_partial_object_flag[ ar_object_idx[ i ] ] 5 u(1)
+                        if( ar_object_confidence_info_present_flag )
+                            ar_object_confidence[ ar_object_idx[ i ] ] 5 u(v)
+                    }
+                }
+            }
+        }
+    }
+}

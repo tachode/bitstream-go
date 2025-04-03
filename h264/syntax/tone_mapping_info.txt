@@ -1,0 +1,44 @@
+tone_mapping_info( payloadSize ) { 
+    tone_map_id 5 ue(v)
+    tone_map_cancel_flag 5 u(1)
+    if( !tone_map_cancel_flag ) {
+        tone_map_repetition_period 5 ue(v)
+        coded_data_bit_depth 5 u(8)
+        target_bit_depth 5 u(8)
+        tone_map_model_id 5 ue(v)
+        if( tone_map_model_id = = 0 ) {
+            min_value 5 u(32)
+            max_value 5 u(32)
+        }
+        if( tone_map_model_id = = 1 ) {
+            sigmoid_midpoint 5 u(32)
+            sigmoid_width 5 u(32)
+        }
+        if( tone_map_model_id = = 2 )
+            for( i = 0; i < ( 1 << target_bit_depth ); i++ )
+                start_of_coded_interval[ i ] 5 u(v)
+        if( tone_map_model_id = = 3 ) {
+            num_pivots 5 u(16)
+            for( i=0; i < num_pivots; i++ ) {
+                coded_pivot_value[ i ] 5 u(v)
+                target_pivot_value[ i ] 5 u(v)
+            }
+        }
+        if( tone_map_model_id = = 4 ) {
+            camera_iso_speed_idc 5 u(8)
+            if( camera_iso_speed_idc = = Extended_ISO )
+                camera_iso_speed_value 5 u(32)
+            exposure_index_idc 5 u(8)
+            if( exposure_index_idc = = Extended_ISO )
+                exposure_index_value 5 u(32)
+            exposure_compensation_value_sign_flag 5 u(1)
+            exposure_compensation_value_numerator 5 u(16)
+            exposure_compensation_value_denom_idc 5 u(16)
+            ref_screen_luminance_white 5 u(32)
+            extended_range_white_level 5 u(32)
+            nominal_black_level_luma_code_value 5 u(16)
+            nominal_white_level_luma_code_value 5 u(16)
+            extended_white_level_luma_code_value 5 u(16)
+        }
+    }
+}

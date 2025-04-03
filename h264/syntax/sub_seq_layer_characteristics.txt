@@ -1,0 +1,8 @@
+sub_seq_layer_characteristics( payloadSize ) { 
+    num_sub_seq_layers_minus1 5 ue(v)
+    for( layer = 0; layer <= num_sub_seq_layers_minus1; layer++ ) {
+        accurate_statistics_flag 5 u(1)
+        average_bit_rate 5 u(16)
+        average_frame_rate 5 u(16)
+    }
+}

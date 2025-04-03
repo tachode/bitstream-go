@@ -1,0 +1,4 @@
+reserved_sei_message( payloadSize ) {
+    for( i = 0; i < payloadSize; i++ )
+        reserved_sei_message_payload_byte 5 b(8)
+}

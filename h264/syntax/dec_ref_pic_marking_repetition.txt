@@ -1,0 +1,10 @@
+dec_ref_pic_marking_repetition( payloadSize ) { 
+    original_idr_flag 5 u(1)
+    original_frame_num 5 ue(v)
+    if( !frame_mbs_only_flag ) {
+        original_field_pic_flag 5 u(1)
+        if( original_field_pic_flag )
+        original_bottom_field_flag 5 u(1)
+    }
+    dec_ref_pic_marking( ) 5
+}

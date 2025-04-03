@@ -1,0 +1,13 @@
+user_data_registered_itu_t_t35( payloadSize ) { 
+    itu_t_t35_country_code 5 b(8)
+    if( itu_t_t35_country_code != 0xFF )
+        i = 1
+    else {
+        itu_t_t35_country_code_extension_byte 5 b(8)
+        i = 2
+    }
+    do {
+        itu_t_t35_payload_byte 5 b(8)
+        i++
+    } while( i < payloadSize )
+}

@@ -1,0 +1,7 @@
+priority_layer_info( payloadSize ) {
+    pr_dependency_id
+    num_priority_ids
+    for( i = 0; i < num_priority_ids; i++ ) {
+        alt_priority_id[ i ]
+    }
+}

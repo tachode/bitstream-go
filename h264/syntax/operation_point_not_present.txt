@@ -1,0 +1,5 @@
+operation_point_not_present( payloadSize ) { 
+    num_operation_points 5 ue(v)
+    for( k = 0; k < num_operation_points; k++ )
+        operation_point_not_present_id[ k ] 5 ue(v)
+}

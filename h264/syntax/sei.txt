@@ -1,0 +1,5 @@
+sei( ) { 
+    while( more_rbsp_data( ) ) {
+        sei_message( ) 5
+    }
+}

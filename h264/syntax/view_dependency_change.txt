@@ -1,0 +1,19 @@
+view_dependency_change( payloadSize ) { 
+    seq_parameter_set_id 5 ue(v)
+    anchor_update_flag 5 u(1)
+    non_anchor_update_flag 5 u(1)
+    if( anchor_update_flag )
+        for( i = 1; i <= num_views_minus1; i++ ) {
+            for( j = 0; j < num_anchor_refs_l0[ i ]; j++ )
+                anchor_ref_l0_flag[ i ][ j ] 5 u(1)
+            for( j = 0; j < num_anchor_refs_l1[ i ]; j++ )
+                anchor_ref_l1_flag[ i ][ j ] 5 u(1)
+        }
+    if( non_anchor_update_flag )
+        for( i = 1; i <= num_views_minus1; i++ ) {
+            for( j = 0; j < num_non_anchor_refs_l0[ i ]; j++ )
+                non_anchor_ref_l0_flag[ i ][ j ] 5 u(1)
+            for( j = 0; j < num_non_anchor_refs_l1[ i ]; j++ )
+                non_anchor_ref_l1_flag[ i ][ j ] 5 u(1)
+        }
+}

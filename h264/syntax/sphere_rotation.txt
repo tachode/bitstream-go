@@ -1,0 +1,10 @@
+sphere_rotation( payloadSize ) { 
+    sphere_rotation_cancel_flag 5 u(1)
+    if( !sphere_rotation_cancel_flag ) {
+        sphere_rotation_persistence_flag 5 u(1)
+        sphere_rotation_reserved_zero_6bits 5 u(6)
+        yaw_rotation 5 i(32)
+        pitch_rotation 5 i(32)
+        roll_rotation 5 i(32)
+    }
+}

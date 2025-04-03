@@ -1,0 +1,10 @@
+mastering_display_colour_volume( payloadSize ) { 
+    for( c = 0; c < 3; c++ ) {
+        display_primaries_x[ c ] 5 u(16)
+        display_primaries_y[ c ] 5 u(16)
+    }
+    white_point_x 5 u(16)
+    white_point_y 5 u(16)
+    max_display_mastering_luminance 5 u(32)
+    min_display_mastering_luminance 5 u(32)
+}

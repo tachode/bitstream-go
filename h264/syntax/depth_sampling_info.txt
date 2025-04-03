@@ -1,0 +1,15 @@
+depth_sampling_info( payloadSize ) { 
+    dttsr_x_mul 5 u(16)
+    dttsr_x_dp 5 u(4)
+    dttsr_y_mul 5 u(16)
+    dttsr_y_dp 5 u(4)
+    per_view_depth_grid_pos_flag 5 u(1)
+    if( per_view_depth_grid_pos_flag ) {
+        num_video_plus_depth_views_minus1 5 ue(v)
+        for( i = 0; i <= num_video_plus_depth_views_minus1; i++ ) {
+            depth_grid_view_id[ i ] 5 ue(v)
+            depth_grid_position( )
+        }
+    } else
+        depth_grid_position( )
+}

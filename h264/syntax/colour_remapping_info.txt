@@ -1,0 +1,39 @@
+colour_remapping_info( payloadSize ) {
+    colour_remap_id 5 ue(v)
+    colour_remap_cancel_flag 5 u(1)
+    if( !colour_remap_cancel_flag ) {
+        colour_remap_repetition_period 5 ue(v)
+        colour_remap_video_signal_info_present_flag
+        if( colour_remap_video_signal_info_present_flag ) {
+            colour_remap_full_range_flag 5 u(1)
+            colour_remap_primaries 5 u(8)
+            colour_remap_transfer_function 5 u(8)
+            colour_remap_matrix_coefficients 5 u(8)
+        }
+        colour_remap_input_bit_depth 5 u(8)
+        colour_remap_output_bit_depth 5 u(8)
+        for( c = 0; c < 3; c++ ) {
+            pre_lut_num_val_minus1[ c ] 5 u(8)
+            if( pre_lut_num_val_minus1[ c ] > 0 )
+                for( i = 0; i <= pre_lut_num_val_minus1[ c ]; i++ ) {
+                    pre_lut_coded_value[ c ][ i ] 5 u(v)
+                    pre_lut_target_value[ c ][ i ]  5 u(v)
+                }
+        }
+        colour_remap_matrix_present_flag 5 u(1)
+        if( colour_remap_matrix_present_flag ) {
+            log2_matrix_denom 5 u(4)
+            for( c = 0; c < 3; c++ )
+                for( i = 0; i < 3; i++ )
+                    colour_remap_coeffs[ c ][ i ] 5 se(v)
+        }
+        for( c = 0; c < 3; c++ ) {
+            post_lut_num_val_minus1[ c ] 5 u(8)
+            if( post_lut_num_val_minus1[ c ] > 0 )
+                for( i = 0; i <= post_lut_num_val_minus1[ c ]; i++ ) {
+                    post_lut_coded_value[ c ][ i ] 5 u(v)
+                    post_lut_target_value[ c ][ i ] 5 u(v)
+                }
+        }
+    }
+}

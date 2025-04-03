@@ -1,0 +1,16 @@
+scalable_nesting( payloadSize ) { 
+    all_layer_representations_in_au_flag 5 u(1)
+    if( all_layer_representations_in_au_flag = = 0) {
+        num_layer_representations_minus1 5 ue(v)
+        for( i = 0; i <= num_layer_representations_minus1; i++ ) {
+            sei_dependency_id[ i ] 5 u(3)
+            sei_quality_id[ i ] 5 u(4)
+        }
+        sei_temporal_id 5 u(3)
+    }
+    while( !byte_aligned( ) )
+        sei_nesting_zero_bit /* equal to 0 */ 5 f(1)=0
+    do
+        sei_message( ) 5
+    while( more_rbsp_data( ) )
+}

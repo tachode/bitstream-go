@@ -1,0 +1,6 @@
+recovery_point( payloadSize ) { 
+    recovery_frame_cnt 5 ue(v)
+    exact_match_flag 5 u(1)
+    broken_link_flag 5 u(1)
+    changing_slice_group_idc 5 u(2)
+}

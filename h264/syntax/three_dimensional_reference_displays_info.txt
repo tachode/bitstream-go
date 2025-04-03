@@ -1,0 +1,23 @@
+three_dimensional_reference_displays_info( payloadSize ) { 
+    prec_ref_baseline 5 ue(v)
+    prec_ref_display_width 5 ue(v)
+    ref_viewing_distance_flag 5 u(1)
+    if( ref_viewing_distance_flag )
+        prec_ref_viewing_dist 5 ue(v)
+    num_ref_displays_minus1 5 ue(v)
+    numRefDisplays = num_ref_displays_minus1 + 1
+    for( i = 0; i < numRefDisplays; i++ ) {
+        exponent_ref_baseline[ i ] 5 u(6)
+        mantissa_ref_baseline[ i ] 5 u(v)
+        exponent_ref_display_width[ i ] 5 u(6)
+        mantissa_ref_display_width[ i ] 5 u(v)
+        if( ref_viewing_distance_flag ) {
+            exponent_ref_viewing_distance[ i ] 5 u(6)
+            mantissa_ref_viewing_distance[ i ] 5 u(v)
+        }
+        additional_shift_present_flag[ i ] 5 u(1)
+        if( additional_shift_present[ i ] )
+            num_sample_shift_plus512[ i ] 5 u(10)
+    }
+    three_dimensional_reference_displays_extension_flag 5 u(1)
+}

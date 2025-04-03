@@ -1,0 +1,19 @@
+mvc_scalable_nesting( payloadSize ) { 
+    operation_point_flag 5 u(1)
+    if( !operation_point_flag ) {
+        all_view_components_in_au_flag 5 u(1)
+        if( !all_view_components_in_au_flag ) {
+            num_view_components_minus1 5 ue(v)
+            for( i = 0; i <= num_view_components_minus1; i++ )
+            sei_view_id[ i ] 5 u(10)
+        }
+    } else {
+        num_view_components_op_minus1 5 ue(v)
+        for( i = 0; i <= num_view_components_op_minus1; i++ )
+            sei_op_view_id[ i ] 5 u(10)
+        sei_op_temporal_id 5 u(3)
+    }
+    while( !byte_aligned( ) )
+        sei_nesting_zero_bit /* equal to 0 */ 5 f(1)=0
+    sei_message( ) 5
+}

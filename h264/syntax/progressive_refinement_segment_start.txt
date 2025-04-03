@@ -1,0 +1,4 @@
+progressive_refinement_segment_start( payloadSize ) {
+    progressive_refinement_id 5 ue(v)
+    num_refinement_steps_minus1 5 ue(v)
+}

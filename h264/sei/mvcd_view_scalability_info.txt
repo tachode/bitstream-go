@@ -1,0 +1,60 @@
+mvcd_view_scalability_info( payloadSize ) { 
+    num_operation_points_minus1 5 ue(v)
+    for( i = 0; i <= num_operation_points_minus1; i++ ) {
+        operation_point_id[ i ] 5 ue(v)
+        priority_id[ i ] 5 u(5)
+        temporal_id[ i ] num_target_output_views_minus1[ i ] for( j = 0; j <= num_target_output_views_minus1[ i ]; j++ ) {
+            view_id[ i ][ j ] mvcd_op_view_info( )
+        }
+        profile_level_info_present_flag[ i ] bitrate_info_present_flag[ i ] frm_rate_info_present_flag[ i ] if( !num_target_output_views_minus1[ i ] )
+        view_dependency_info_present_flag[ i ] parameter_sets_info_present_flag[ i ] bitstream_restriction_info_present_flag[ i ] if( profile_level_info_present_flag[ i ] )
+        op_profile_level_idc[ i ] if( bitrate_info_present_flag[ i ] ) {
+        avg_bitrate[ i ] max_bitrate[ i ] max_bitrate_calc_window[ i ] }
+        if( frm_rate_info_present_flag[ i ] ) {
+        constant_frm_rate_idc[ i ] avg_frm_rate[ i ] }
+        if( view_dependency_info_present_flag[ i ] ) {
+            num_directly_dependent_views[ i ] for( j = 0; j < num_directly_dependent_views[ i ]; j++ ) {
+                directly_dependent_view_id[ i ][ j ] mvcd_op_view_info( )
+            }
+        } else
+        view_dependency_info_src_op_id[ i ] if( parameter_sets_info_present_flag[ i ] ) {
+            num_seq_parameter_set_minus1[ i ] for( j = 0; j <= num_seq_parameter_set_minus1[ i ]; j++ )
+            seq_parameter_set_id_delta[ i ][ j ] num_subset_seq_parameter_set_minus1[ i ] for( j = 0; j <= num_subset_seq_parameter_set_minus1[ i ]; j++ )
+            subset_seq_parameter_set_id_delta[ i ][ j ] num_pic_parameter_set_minus1[ i ] for( j = 0; j <= num_init_pic_parameter_set_minus1[ i ]; j++ )
+        pic_parameter_set_id_delta[ i ][ j ] } else
+        5 u(3)
+        5 ue(v)
+        5 ue(v)
+        5 u(1)
+        5 u(1)
+        5 u(1)
+        5 u(1)
+        5 u(1)
+        5 u(1)
+        5 u(24)
+        5 u(16)
+        5 u(16)
+        5 u(16)
+        5 u(2)
+        5 u(16)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        5 ue(v)
+        if( bitstream_restriction_info_present_flag[ i ] ) {
+            motion_vectors_over_pic_boundaries_flag[ i ] 5 u(1)
+            max_bytes_per_pic_denom[ i ] 5 ue(v)
+            max_bits_per_mb_denom[ i ] 5 ue(v)
+            log2_max_mv_length_horizontal[ i ] 5 ue(v)
+            log2_max_mv_length_vertical[ i ] 5 ue(v)
+            num_reorder_frames[ i ] 5 ue(v)
+            max_dec_frame_buffering[ i ] 5 ue(v)
+        }
+    }
+}

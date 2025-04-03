@@ -1,0 +1,47 @@
+view_scalability_info( payloadSize ) { 
+    num_operation_points_minus1 5 ue(v)
+    for( i = 0; i <= num_operation_points_minus1; i++ ) {
+        operation_point_id[ i ] 5 ue(v)
+        priority_id[ i ] 5 u(5)
+        temporal_id[ i ] 5 u(3)
+        num_target_output_views_minus1[ i ] 5 ue(v)
+        for( j = 0; j <= num_target_output_views_minus1[ i ]; j++ )
+        view_id[ i ][ j ] 5 ue(v)
+        profile_level_info_present_flag[ i ] 5 u(1)
+        bitrate_info_present_flag[ i ] 5 u(1)
+        frm_rate_info_present_flag[ i ] 5 u(1)
+        if( !num_target_output_views_minus1[ i ] )
+        view_dependency_info_present_flag[ i ] 5 u(1)
+        parameter_sets_info_present_flag[ i ] 5 u(1)
+        bitstream_restriction_info_present_flag[ i ] 5 u(1)
+        if( profile_level_info_present_flag[ i ] )
+        op_profile_level_idc[ i ] 5 u(24)
+        if( bitrate_info_present_flag[ i ] ) {
+            avg_bitrate[ i ] 5 u(16)
+            max_bitrate[ i ] 5 u(16)
+            max_bitrate_calc_window[ i ] 5 u(16)
+        }
+        if( frm_rate_info_present_flag[ i ] ) {
+            constant_frm_rate_idc[ i ] 5 u(2)
+            avg_frm_rate[ i ] 5 u(16)
+        }
+        if( view_dependency_info_present_flag[ i ] ) {
+            num_directly_dependent_views[ i ] 5 ue(v)
+            for( j = 0; j < num_directly_dependent_views[ i ]; j++ )
+            directly_dependent_view_id[ i ][ j ] 5 ue(v)
+        } else
+        view_dependency_info_src_op_id[ i ] 5 ue(v)
+        if( parameter_sets_info_present_flag[ i ] ) {
+            num_seq_parameter_sets[ i ] 5 ue(v)
+            for( j = 0; j < num_seq_parameter_sets[ i ]; j++ )
+            seq_parameter_set_id_delta[ i ][ j ] 5 ue(v)
+            num_subset_seq_parameter_sets[ i ] 5 ue(v)
+            for( j = 0; j < num_subset_seq_parameter_sets[ i ]; j++ )
+            subset_seq_parameter_set_id_delta[ i ][ j ] 5 ue(v)
+            num_pic_parameter_sets_minus1[ i ] 5 ue(v)
+            for( j = 0; j <= num_pic_parameter_sets_minus1[ i ]; j++ )
+        pic_parameter_set_id_delta[ i ][ j ] } else
+        parameter_sets_info_src_op_id[ i ] if( bitstream_restriction_info_present_flag[ i ] ) {
+        motion_vectors_over_pic_boundaries_flag[ i ] max_bytes_per_pic_denom[ i ] max_bits_per_mb_denom[ i ] log2_max_mv_length_horizontal[ i ] log2_max_mv_length_vertical[ i ] max_num_reorder_frames[ i ] max_dec_frame_buffering[ i ] }
+    }
+}

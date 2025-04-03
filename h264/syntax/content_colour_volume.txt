@@ -1,0 +1,22 @@
+content_colour_volume( payloadSize ) { 
+    ccv_cancel_flag 5 u(1)
+    if( !ccv_cancel_flag ) {
+        ccv_persistence_flag 5 u(1)
+        ccv_primaries_present_flag 5 u(1)
+        ccv_min_luminance_value_present_flag 5 u(1)
+        ccv_max_luminance_value_present_flag 5 u(1)
+        ccv_avg_luminance_value_present_flag 5 u(1)
+        ccv_reserved_zero_2bits 5 u(2)
+        if( ccv_primaries_present_flag )
+            for( c = 0; c < 3; c++ ) {
+                ccv_primaries_x[ c ] 5 i(32)
+                ccv_primaries_y[ c ] 5 i(32)
+            }
+        if( ccv_min_luminance_value_present_flag )
+            ccv_min_luminance_value 5 u(32)
+        if( ccv_max_luminance_value_present_flag )
+            ccv_max_luminance_value 5 u(32)
+        if( ccv_avg_luminance_value_present_flag )
+            ccv_avg_luminance_value 5 u(32)
+    }
+}

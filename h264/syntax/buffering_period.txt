@@ -1,0 +1,13 @@
+buffering_period( payloadSize ) { 
+    seq_parameter_set_id 5 ue(v)
+    if( NalHrdBpPresentFlag )
+        for( SchedSelIdx = 0; SchedSelIdx <= cpb_cnt_minus1; SchedSelIdx++ ) {
+            initial_cpb_removal_delay[ SchedSelIdx ] 5 u(v)
+            initial_cpb_removal_delay_offset[ SchedSelIdx ] 5 u(v)
+        }
+    if( VclHrdBpPresentFlag )
+        for( SchedSelIdx = 0; SchedSelIdx <= cpb_cnt_minus1; SchedSelIdx++ ) {
+            initial_cpb_removal_delay[ SchedSelIdx ] 5 u(v)
+            initial_cpb_removal_delay_offset[ SchedSelIdx ] 5 u(v)
+        }
+}

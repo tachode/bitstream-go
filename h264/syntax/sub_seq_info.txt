@@ -1,0 +1,10 @@
+sub_seq_info( payloadSize ) { 
+    sub_seq_layer_num 5 ue(v)
+    sub_seq_id 5 ue(v)
+    first_ref_pic_flag 5 u(1)
+    leading_non_ref_pic_flag 5 u(1)
+    last_pic_flag 5 u(1)
+    sub_seq_frame_num_flag 5 u(1)
+    if( sub_seq_frame_num_flag )
+        sub_seq_frame_num 5 ue(v)
+}

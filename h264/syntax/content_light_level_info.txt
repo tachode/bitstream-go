@@ -1,0 +1,4 @@
+content_light_level_info( payloadSize ) { 
+    max_content_light_level 5 u(16)
+    max_pic_average_light_level 5 u(16)
+}
