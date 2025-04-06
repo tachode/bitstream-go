@@ -1,0 +1,11 @@
+dec_ref_base_pic_marking( ) {
+    adaptive_ref_base_pic_marking_mode_flag 2 u(1)
+        if( adaptive_ref_base_pic_marking_mode_flag )
+            do {
+                memory_management_base_control_operation 2 ue(v)
+                if( memory_management_base_control_operation = = 1 )
+                    difference_of_base_pic_nums_minus1 2 ue(v)
+                if( memory_management_base_control_operation = = 2 )
+                    long_term_base_pic_num 2 ue(v)
+            } while( memory_management_base_control_operation != 0 )
+}

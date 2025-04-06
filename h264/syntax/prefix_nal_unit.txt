@@ -1,0 +1,4 @@
+prefix_nal_unit( ) { 
+    if( svc_extension_flag )
+      prefix_nal_unit_svc( ) /* specified in Annex G */ 2
+}

@@ -1,0 +1,16 @@
+prefix_nal_unit_svc( ) { 
+    if( nal_ref_idc != 0 ) {
+        store_ref_base_pic_flag 2 u(1)
+        if( ( use_ref_base_pic_flag | | store_ref_base_pic_flag ) && !idr_flag )
+            dec_ref_base_pic_marking( ) 2
+        additional_prefix_nal_unit_extension_flag 2 u(1)
+        if( additional_prefix_nal_unit_extension_flag = = 1 )
+            while( more_rbsp_data( ) )
+                additional_prefix_nal_unit_extension_data_flag 2 u(1)
+        rbsp_trailing_bits( ) 2
+    } else if( more_rbsp_data( ) ) {
+        while( more_rbsp_data( ) )
+            additional_prefix_nal_unit_extension_data_flag 2 u(1)
+        rbsp_trailing_bits( ) 2
+    }
+}

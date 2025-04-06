@@ -21,7 +21,7 @@ encoding syntax, to assist with the process.
 - 🗹 EndOfStream
 - 🗹 Filler
 - 🗹 SpsExt
-- ☐ PrefixNalUnit
+- 🗹 PrefixNalUnit (still needs unit tests)
 - ☐ SubsetSeqParameterSet
 - ☐ DepthParameterSet
 - ☐ CodedSliceAux
