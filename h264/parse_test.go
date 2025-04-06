@@ -60,8 +60,7 @@ func TestParse_ValidPPS(t *testing.T) {
 
 func TestParse_ValidSEI(t *testing.T) {
 	for i, seiNalUnit := range seiBytes {
-		t.Logf("SEI test %d", i)
-		t.Logf("%s", hex.Dump(seiNalUnit))
+		t.Logf("SEI test %d\n%s", i, hex.Dump(seiNalUnit))
 		nal, err := parser.Parse(seiNalUnit)
 		if err != nil {
 			t.Fatalf("Parse failed: %v", err)

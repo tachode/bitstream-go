@@ -12,7 +12,7 @@ func init() { RegisterSeiPayloadType(SeiTypeUserDataUnregistered, &UserDataUnreg
 
 type UserDataUnregistered struct {
 	UuidIsoIec11578         uuid.UUID `json:"uuid_iso_iec_11578"`
-	UserDataPayload         []byte    `json:"user_data_payload_byte"`
+	UserDataPayload         []byte    `json:"user_data_payload"`
 	UserDataPayloadAsString string    `json:"user_data_payload_as_string,omitempty"`
 }
 
