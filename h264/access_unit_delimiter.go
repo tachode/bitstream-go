@@ -2,7 +2,7 @@ package h264
 
 import "github.com/tachode/bitstream-go/bits"
 
-func init() { RegisterNalPayload(NalUnitTypeAUD, &AccessUnitDelimiter{}) }
+func init() { RegisterNalPayloadType(NalUnitTypeAUD, &AccessUnitDelimiter{}) }
 
 type AccessUnitDelimiter struct {
 	PrimaryPicType uint8 `descriptor:"u(3)" json:"primary_pic_type"`

@@ -8,6 +8,9 @@ type Decoder interface {
 	DecodeRange(v any, start string, end string) error
 	DecodeIndex(v any, field string, i int) error
 	Value(name string) any
+	SetValue(name string, value any)
+	SetValueLength(name string, length int)
+	Reset(in any) error
 	Error() error
 
 	// Functions from H.264, §7.2

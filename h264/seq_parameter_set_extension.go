@@ -2,7 +2,7 @@ package h264
 
 import "github.com/tachode/bitstream-go/bits"
 
-func init() { RegisterNalPayload(NalUnitTypeSpsExt, &SeqParameterSetExtension{}) }
+func init() { RegisterNalPayloadType(NalUnitTypeSpsExt, &SeqParameterSetExtension{}) }
 
 type SeqParameterSetExtension struct {
 	SeqParameterSetId       uint64 `descriptor:"ue(v)" json:"seq_parameter_set_id"`

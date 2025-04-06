@@ -8,20 +8,19 @@ type ItuReader struct {
 
 // This is simply an alias so that the methods on ItuReader match the syntax in the
 // H.264 spec
-func (r *ItuReader) U(bits int) (uint64, error) {
-	return r.ReadBits(bits)
+func (r *ItuReader) U(bits int) (val uint64, n int, err error) {
+	val, err = r.ReadBits(bits)
+	return val, bits, err
 }
 
-func (r *ItuReader) UE() (uint64, error) {
+func (r *ItuReader) UE() (val uint64, n int, err error) {
 	leadingZeroBits := 0
-
-	var val uint64
-	var err error
 
 	for {
 		bit, err := r.ReadBits(1)
+		n += 1
 		if err != nil {
-			return 0, err
+			return 0, n, err
 		}
 		if bit == 1 {
 			break
@@ -31,31 +30,32 @@ func (r *ItuReader) UE() (uint64, error) {
 
 	if leadingZeroBits != 0 {
 		val, err = r.ReadBits(leadingZeroBits)
+		n += leadingZeroBits
 		if err != nil {
-			return 0, err
+			return 0, n, err
 		}
 	}
 	// Need to put the leading bit back onto the value
 	// (since we read it while we were counting zero bits)
 	val |= 1 << (leadingZeroBits)
 
-	return val - 1, nil
+	return val - 1, n, nil
 }
 
-func (r *ItuReader) SE() (int64, error) {
-	ueVal, err := r.UE()
+func (r *ItuReader) SE() (val int64, n int, err error) {
+	ueVal, n, err := r.UE()
 	if err != nil {
-		return 0, err
+		return 0, n, err
 	}
 
 	if ueVal == 0 {
-		return 0, nil
+		return 0, n, nil
 	}
 
 	if ueVal%2 == 0 {
-		return -int64(ueVal / 2), nil
+		return -int64(ueVal / 2), n, nil
 	}
-	return int64((ueVal + 1) / 2), nil
+	return int64((ueVal + 1) / 2), n, nil
 }
 
 func (r *ItuReader) MoreDataInByteStream() bool {

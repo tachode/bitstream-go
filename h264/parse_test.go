@@ -1,16 +1,19 @@
 package h264_test
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"testing"
 
 	"github.com/tachode/bitstream-go/h264"
 )
 
+var parser = h264.NewParser()
+
 func TestParse_ValidSPS(t *testing.T) {
 	spsNalUnit := spsBytes[:]
 
-	nal, err := h264.Parse(spsNalUnit)
+	nal, err := parser.Parse(spsNalUnit)
 	if err != nil {
 		t.Fatalf("Parse failed: %v", err)
 	}
@@ -34,7 +37,7 @@ func TestParse_ValidSPS(t *testing.T) {
 func TestParse_ValidPPS(t *testing.T) {
 	ppsNalUnit := ppsBytes[:]
 
-	nal, err := h264.Parse(ppsNalUnit)
+	nal, err := parser.Parse(ppsNalUnit)
 	if err != nil {
 		t.Fatalf("Parse failed: %v", err)
 	}
@@ -55,11 +58,37 @@ func TestParse_ValidPPS(t *testing.T) {
 	t.Logf("NAL JSON:\n%s", nalJSON)
 }
 
+func TestParse_ValidSEI(t *testing.T) {
+	for i, seiNalUnit := range seiBytes {
+		t.Logf("SEI test %d", i)
+		t.Logf("%s", hex.Dump(seiNalUnit))
+		nal, err := parser.Parse(seiNalUnit)
+		if err != nil {
+			t.Fatalf("Parse failed: %v", err)
+		}
+
+		if nal.NalUnitType != h264.NalUnitTypeSEI {
+			t.Errorf("Expected NalUnitTypeSEI, got %v", nal.NalUnitType)
+		}
+
+		if _, ok := nal.Payload.(*h264.Sei); !ok {
+			t.Errorf("Expected payload to be of type Sei")
+		}
+
+		nalJSON, err := json.MarshalIndent(nal, "", "  ")
+		if err != nil {
+			t.Fatalf("Failed to marshal nal to JSON: %v", err)
+		}
+
+		t.Logf("NAL JSON:\n%s", nalJSON)
+	}
+}
+
 func TestParse_EmptyBuffer(t *testing.T) {
 	// Empty buffer
 	emptyBuffer := []byte{}
 
-	_, err := h264.Parse(emptyBuffer)
+	_, err := parser.Parse(emptyBuffer)
 	if err == nil {
 		t.Fatalf("Expected error for empty buffer, got nil")
 	}

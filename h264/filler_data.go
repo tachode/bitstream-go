@@ -2,7 +2,7 @@ package h264
 
 import "github.com/tachode/bitstream-go/bits"
 
-func init() { RegisterNalPayload(NalUnitTypeFiller, &FillerDataRbsp{}) }
+func init() { RegisterNalPayloadType(NalUnitTypeFiller, &FillerDataRbsp{}) }
 
 type FillerDataRbsp struct {
 	FfByte uint8 `descriptor:"f(8)=255" json:"ff_byte"`

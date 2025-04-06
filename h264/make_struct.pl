@@ -20,6 +20,7 @@ while (<>) {
     s/ = / := /;
 
     /^( *)/;
+
     $indent = $1;
     while (@brackets && length($indent) <= length($brackets[$#brackets])) {
         $closing_brackets .= (pop @brackets)."}\n";
@@ -58,10 +59,11 @@ while (<>) {
         $struct .= "    $name   $type   `descriptor:\"$descriptor$extra\" json:\"$snake_name\"`\n";
     } elsif (/^( *)(while|do|if|else|for|\})/) {
         # Handle control blocks
-        $indent = $1;
         foreach my $key (keys %name_map) {
             s/\b$key\b/e.$name_map{$key}/g;
         }
+
+        $indent = $1;
         s/ *\( *(.*) *\) */ $1 /;
         s/ +\{/ \{/;
 
@@ -88,6 +90,9 @@ while (<>) {
     } else {
         # Other pseudocode is just used as-is, and we'll fix to make it
         # into valid Go manually.
+        foreach my $key (keys %name_map) {
+            s/\b$key\b/e.$name_map{$key}/g;
+        }
         $read_func .= "$_\n";
     }
 
@@ -99,7 +104,8 @@ $read_func =~ s/(byte_aligned|more_rbsp_data|next_bits)/"d.".camel_case($1)/gome
 $read_func =~ s/(}[\r\n]*)$/    return d.Error()\n$1/gos;
 
 print "package h264\n\nimport \"github.com/tachode/bitstream-go/bits\"\n\n";
-print "func init() { RegisterNalPayload(NalUnitTypeTODO, &${type_name}{}) }\n\n";
+print "func init() { RegisterNalPayloadType(NalUnitTypeTODO, &${type_name}{}) }\n\n";
+print "func init() { RegisterSeiPayloadType(SeiType${type_name}, &${type_name}{}) }\n\n";
 print "type $type_name struct {\n$struct}\n";
 print "\nfunc (e *$type_name) Read($type_params) error {\n$read_func\n";
 

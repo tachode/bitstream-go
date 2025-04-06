@@ -1,38 +1,106 @@
 package bits
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
 type ItuDecoder struct {
-	reader *ItuReader
-	value  map[string]any
-	err    error
+	reader      *ItuReader
+	value       map[string]any
+	valueSource map[string]string
+	valueLength map[string]int
+	err         error
+	decodingLog []string
 }
 
-func NewItuDecoder(r *ItuReader) *ItuDecoder {
-	return &ItuDecoder{
-		reader: r,
-		value:  make(map[string]any),
+// NewItuDecoder creates a new ItuDecoder instance.
+// It takes an io.Reader, an *ItuReader, or a byte
+// slice as input.
+func NewItuDecoder(in any) *ItuDecoder {
+	d := &ItuDecoder{
+		value:       make(map[string]any),
+		valueSource: make(map[string]string),
+		valueLength: make(map[string]int),
+		decodingLog: make([]string, 0),
 	}
+	d.log("Creating new ItuDecoder")
+	d.Reset(in)
+	return d
+}
+
+func (d *ItuDecoder) Log() []string {
+	return d.decodingLog
+}
+
+func (d *ItuDecoder) SetValueLength(name string, length int) {
+	d.valueLength[name] = length
+	d.log(fmt.Sprintf("Setting length of field '%s' to %d", name, length))
+}
+
+func (d *ItuDecoder) SetValue(name string, value any) {
+	d.value[name] = value
+	pc, _, _, ok := runtime.Caller(1)
+	funcName := "SetValue()"
+	if ok {
+		funcName = runtime.FuncForPC(pc).Name()
+	}
+	d.valueSource[name] = funcName + "()"
+	d.log(fmt.Sprintf("Setting field '%s' to %v in %v()", name, value, funcName))
+}
+
+// Reset resets the ItuDecoder instance with a new input,
+// but retains all previously decoded variable values.
+// It takes an io.Reader, an *ItuReader, or a byte
+// slice as input.
+func (d *ItuDecoder) Reset(in any) error {
+	// In order to implement several H.264 functions, parsing of RBSP payloads
+	// needs to be buffered. The functions that require this are more_rbsp_data()
+	// more_rbsp_trailing_data(), and next_bits(). To support, this, any Reader
+	// passed to the ItuDecoder is converted to a bufio.Reader if it isn't already.
+
+	if reader, ok := in.(*ItuReader); ok {
+		d.reader = reader
+	} else if buf, ok := in.([]byte); ok {
+		reader := &ReadBuffer{Reader: bufio.NewReader(bytes.NewReader(buf))}
+		d.reader = &ItuReader{Reader: reader}
+	} else if reader, ok := in.(io.Reader); ok {
+		if _, ok := reader.(*bufio.Reader); !ok {
+			reader = bufio.NewReader(reader)
+		}
+		d.reader = &ItuReader{Reader: &ReadBuffer{Reader: reader}}
+	} else {
+		return d.setError(fmt.Errorf("unsupported type %T", in))
+	}
+	d.err = nil
+	d.decodingLog = make([]string, 0)
+	d.log(fmt.Sprintf("Resetting decoder with %T", in))
+	return nil
 }
 
 func (d *ItuDecoder) Value(name string) any {
 	val, ok := d.value[name]
 	if !ok {
+		d.log(fmt.Sprintf("Attempt to read unset variable: '%s'", name))
 		return nil
 	}
+	from := d.valueSource[name]
+
+	d.log(fmt.Sprintf("Reading variable '%s' = %v (from %v)", name, val, from))
 	return val
 }
 
 func (d *ItuDecoder) Read(b []byte) (n int, err error) {
 	n, err = d.reader.Read(b)
 	if err != nil {
-		d.err = err
+		d.setError(err)
 	}
 	return n, err
 }
@@ -45,23 +113,21 @@ func (d *ItuDecoder) DecodeRange(v any, start string, end string) error {
 	if d.err != nil {
 		return d.err
 	}
+	structName := fmt.Sprintf("%T", v)
 	val := reflect.ValueOf(v)
 	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Struct {
-		d.err = fmt.Errorf("expected a pointer to a struct, got %T", v)
-		return d.err
+		return d.setError(fmt.Errorf("expected a pointer to a struct, got %T", v))
 	}
 	val = val.Elem()
 	typ := val.Type()
 
 	startField, ok := typ.FieldByName(start)
 	if !ok {
-		d.err = fmt.Errorf("start field %s not found in struct", start)
-		return d.err
+		return d.setError(fmt.Errorf("start field %s not found in struct", start))
 	}
 	endField, ok := typ.FieldByName(end)
 	if !ok {
-		d.err = fmt.Errorf("end field %s not found in struct", start)
-		return d.err
+		return d.setError(fmt.Errorf("end field %s not found in struct", start))
 	}
 
 	for fieldIndex := startField.Index[0]; fieldIndex <= endField.Index[0]; fieldIndex++ {
@@ -72,10 +138,9 @@ func (d *ItuDecoder) DecodeRange(v any, start string, end string) error {
 		if descriptor == "" {
 			continue
 		}
-		err := d.load(structField.Name, structVal, descriptor)
+		err := d.load(structName, structField.Name, structVal, descriptor)
 		if err != nil {
-			d.err = err
-			return d.err
+			return d.setError(err)
 		}
 
 	}
@@ -86,27 +151,22 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int) error {
 	if d.err != nil {
 		return d.err
 	}
-	if d.err != nil {
-		return d.err
-	}
 	val := reflect.ValueOf(v)
+	structName := fmt.Sprintf("%T", v)
 	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Struct {
-		d.err = fmt.Errorf("expected a pointer to a struct, got %T", v)
-		return d.err
+		return d.setError(fmt.Errorf("expected a pointer to a struct, got %T", v))
 	}
 	val = val.Elem()
 	typ := val.Type()
 
 	structField, ok := typ.FieldByName(fieldName)
 	if !ok {
-		d.err = fmt.Errorf("field %s not found in struct", fieldName)
-		return d.err
+		return d.setError(fmt.Errorf("field %s not found in struct", fieldName))
 	}
 	descriptor := structField.Tag.Get("descriptor")
 	structVal := val.FieldByName(fieldName)
 	if structVal.Kind() != reflect.Slice {
-		d.err = fmt.Errorf("field %s is not a slice", fieldName)
-		return d.err
+		return d.setError(fmt.Errorf("field %s is not a slice", fieldName))
 	}
 	if structVal.IsZero() {
 		structVal.Set(reflect.MakeSlice(structVal.Type(), index, index+16))
@@ -120,10 +180,9 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int) error {
 	if index+1 > structVal.Len() {
 		structVal.SetLen(index + 1)
 	}
-	err := d.load(fmt.Sprintf("%v[%v]", structField.Name, index), structVal.Index(index), descriptor)
+	err := d.load(structName, fmt.Sprintf("%v[%v]", structField.Name, index), structVal.Index(index), descriptor)
 	if err != nil {
-		d.err = err
-		return d.err
+		return d.setError(fmt.Errorf("field %s[%d]: %w", fieldName, index, err))
 	}
 	return nil
 }
@@ -132,7 +191,11 @@ func (d *ItuDecoder) Error() error {
 	return d.err
 }
 
-func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) error {
+func (d *ItuDecoder) load(structName string, name string, val reflect.Value, descriptor string) error {
+	var bitsRead int
+	if strings.Contains(structName, ".") {
+		structName = structName[strings.LastIndex(structName, ".")+1:]
+	}
 	if !val.CanSet() {
 		return fmt.Errorf("field %v cannot be set", name)
 	}
@@ -141,59 +204,99 @@ func (d *ItuDecoder) load(name string, val reflect.Value, descriptor string) err
 		return fmt.Errorf("could not decode field %v: %w", name, err)
 	}
 	switch descriptorType {
-	case "ae", "ce", "i", "me", "st", "te":
+	case "ae", "ce", "me", "st", "te":
+		return fmt.Errorf("field %v: descriptor type %v is not yet supported", name, descriptorType)
+	case "i":
+		// TODO: Implement signed integer parsing
 		return fmt.Errorf("field %v: descriptor type %v is not yet supported", name, descriptorType)
 	case "u", "b", "f":
-		v, err := d.reader.U(descriptorLength)
+		if descriptorLength == 0 {
+			var ok bool
+			baseName := name
+			if strings.Contains(name, "[") {
+				baseName = name[:strings.Index(name, "[")]
+			}
+			descriptorLength, ok = d.valueLength[baseName]
+			if !ok {
+				return d.setError(fmt.Errorf("field %v: descriptor length is not set for %s", name, baseName))
+			}
+		}
+		v, n, err := d.reader.U(descriptorLength)
+		bitsRead = n
 		if err != nil {
 			return fmt.Errorf("field %v: %w", name, err)
 		}
+		d.valueSource[name] = structName
 		if val.CanUint() {
 			val.SetUint(v)
+			d.value[name] = v
 		} else if val.Kind() == reflect.Bool {
 			val.SetBool(v != 0)
+			d.value[name] = (v != 0)
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
 		if descriptorType == "f" {
 			if v != fixedValue {
-				return fmt.Errorf("field %v: value %v does not match expected value %v", name, v, fixedValue)
+				return fmt.Errorf("field %v: value %v does not match expected value %v with descriptor %v", name, v, fixedValue, descriptor)
 			}
 		}
-		d.value[name] = v
 	case "ue":
-		v, err := d.reader.UE()
+		v, n, err := d.reader.UE()
+		bitsRead = n
 		if err != nil {
 			return fmt.Errorf("field %v: %w", name, err)
 		}
 		if val.CanUint() {
 			val.SetUint(v)
+			d.value[name] = v
+			d.valueSource[name] = structName
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
-		d.value[name] = v
 
 	case "se":
-		v, err := d.reader.SE()
+		v, n, err := d.reader.SE()
+		bitsRead = n
 		if err != nil {
 			return fmt.Errorf("field %v: %w", name, err)
 		}
 		if val.CanInt() {
 			val.SetInt(v)
+			d.value[name] = v
+			d.valueSource[name] = structName
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
-		d.value[name] = v
 	default:
-		return fmt.Errorf("field %v: descriptor type %v is invalid", name, descriptorType)
+		return d.setError(fmt.Errorf("field %v: descriptor type %v is invalid", name, descriptorType))
 	}
-	// fmt.Printf("Setting %s (%s) to %v\n", name, descriptor, val)
+	bitsWord := "bits"
+	if bitsRead == 1 {
+		bitsWord = "bit"
+	}
+	d.log(fmt.Sprintf("Setting %s.%s = %v (%s ⇒ %v %s)", structName, name, val, descriptor, bitsRead, bitsWord))
 	return nil
 }
 
-func (d *ItuDecoder) ByteAligned() bool  { return d.reader.ByteAligned() }
-func (d *ItuDecoder) MoreRbspData() bool { return d.reader.MoreRbspData() }
+func (d *ItuDecoder) ByteAligned() bool {
+	if d.err != nil {
+		return true
+	}
+	return d.reader.ByteAligned()
+}
+
+func (d *ItuDecoder) MoreRbspData() bool {
+	if d.err != nil {
+		return false
+	}
+	return d.reader.MoreRbspData()
+}
+
 func (d *ItuDecoder) NextBits(bits int) uint64 {
+	if d.err != nil {
+		return 0
+	}
 	val, _ := d.reader.NextBits(bits)
 	return val
 }
@@ -212,4 +315,29 @@ func parseDescriptor(descriptor string) (typ string, length int, fixedValue uint
 		fixedValue, _ = strconv.ParseUint(fields[2], 10, 0)
 	}
 	return
+}
+
+func (d *ItuDecoder) setError(err error) error {
+	d.err = err
+	pc, file, line, ok := runtime.Caller(1)
+	funcName := ""
+	if ok {
+		funcName = runtime.FuncForPC(pc).Name()
+	}
+	if strings.Contains(funcName, ".") {
+		funcName = funcName[strings.LastIndex(funcName, ".")+1:]
+	}
+	if strings.Contains(file, "/") {
+		file = file[strings.LastIndex(file, "/")+1:]
+	}
+
+	if err != nil {
+		d.log(fmt.Sprintf("Error in %v (%v:%v): %v", funcName, file, line, err))
+	}
+	return err
+}
+
+func (d *ItuDecoder) log(msg string) {
+	// fmt.Println(msg)
+	d.decodingLog = append(d.decodingLog, msg)
 }

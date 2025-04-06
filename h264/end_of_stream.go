@@ -2,7 +2,7 @@ package h264
 
 import "github.com/tachode/bitstream-go/bits"
 
-func init() { RegisterNalPayload(NalUnitTypeEndOfStream, &EndOfStream{}) }
+func init() { RegisterNalPayloadType(NalUnitTypeEndOfStream, &EndOfStream{}) }
 
 type EndOfStream struct {
 }

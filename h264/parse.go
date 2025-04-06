@@ -1,8 +1,6 @@
 package h264
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"reflect"
 
@@ -15,19 +13,25 @@ type NalPayload interface {
 
 var nalPayloadRegistry map[NalUnitType]NalPayload
 
-func RegisterNalPayload(typ NalUnitType, v NalPayload) {
+func RegisterNalPayloadType(typ NalUnitType, v NalPayload) {
 	if nalPayloadRegistry == nil {
 		nalPayloadRegistry = make(map[NalUnitType]NalPayload)
 	}
 	nalPayloadRegistry[typ] = v
 }
 
-func Parse(buffer []byte) (*NalUnit, error) {
-	reader := &bits.ReadBuffer{Reader: bytes.NewBuffer(buffer)}
-	ituReader := &bits.ItuReader{Reader: reader}
-	decoder := bits.NewItuDecoder(ituReader)
+type Parser struct {
+	decoder bits.Decoder
+}
+
+func NewParser() *Parser {
+	return &Parser{decoder: bits.NewItuDecoder([]byte{})}
+}
+
+func (p *Parser) Parse(buffer []byte) (*NalUnit, error) {
+	p.decoder.Reset(buffer)
 	nal := &NalUnit{}
-	err := nal.Read(decoder, len(buffer))
+	err := nal.Read(p.decoder, len(buffer))
 	if err != nil {
 		return nil, err
 	}
@@ -38,25 +42,20 @@ func Parse(buffer []byte) (*NalUnit, error) {
 		nalUnitBuffer = nalUnitBuffer[:len(nalUnitBuffer)-1]
 	}
 
-	// In order to implement several H.264 functions, parsing of RBSP payload
-	// need to be buffered. The functions that require this are more_rbsp_data()
-	// more_rbsp_trailing_data(), and next_bits().
-	reader = &bits.ReadBuffer{Reader: bufio.NewReader(bytes.NewBuffer(nalUnitBuffer))}
-	ituReader = &bits.ItuReader{Reader: reader}
-	decoder = bits.NewItuDecoder(ituReader)
+	p.decoder.Reset(nalUnitBuffer)
 
 	prototype, ok := nalPayloadRegistry[nal.NalUnitType]
 	if !ok {
 		// We don't understand this NAL type, but its payload is in the RBSP bytes,
 		// so the application may be able to make use of it anyway.
-		return nal, decoder.Error()
+		return nal, p.decoder.Error()
 	}
 	copy := reflect.New(reflect.Indirect(reflect.ValueOf(prototype)).Type()).Interface()
 	payload, ok := copy.(NalPayload)
 	if !ok {
 		return nil, fmt.Errorf("invalid registered type %T does not implement NalPayload interface", prototype)
 	}
-	payload.Read(decoder)
+	payload.Read(p.decoder)
 	nal.Payload = payload
-	return nal, decoder.Error()
+	return nal, p.decoder.Error()
 }
