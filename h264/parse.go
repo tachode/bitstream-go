@@ -37,7 +37,7 @@ func (p *Parser) Parse(buffer []byte) (*NalUnit, error) {
 	}
 
 	// Create a slice with the trailing zeros removed
-	nalUnitBuffer := nal.RbspByte
+	nalUnitBuffer := nal.Rbsp
 	for len(nalUnitBuffer) > 0 && nalUnitBuffer[len(nalUnitBuffer)-1] == 0 {
 		nalUnitBuffer = nalUnitBuffer[:len(nalUnitBuffer)-1]
 	}

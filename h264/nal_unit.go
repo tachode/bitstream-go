@@ -16,7 +16,7 @@ type NalUnit struct {
 	NalUnitHeaderSvcExtension   *NalUnitHeaderSvcExtension   `json:"nal_unit_header_svc_extension,omitempty"`
 	NalUnitHeader3davcExtension *NalUnitHeader3davcExtension `json:"nal_unit_header_3davc_extension,omitempty"`
 	NalUnitHeaderMvcExtension   *NalUnitHeaderMvcExtension   `json:"nal_unit_header_mvc_extension,omitempty"`
-	RbspByte                    []byte                       `descriptor:"b(8)" json:"rbsp_byte"`
+	Rbsp                        []byte                       `descriptor:"b(8)" json:"rbsp"`
 	Payload                     any                          `json:"payload"`
 }
 
@@ -61,7 +61,7 @@ func (e *NalUnit) Read(d bits.Decoder, NumBytesInNALunit int) error {
 	if err != nil {
 		return err
 	}
-	e.RbspByte = Unescape(payloadBytes)
+	e.Rbsp = Unescape(payloadBytes)
 
 	return d.Error()
 }
