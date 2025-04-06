@@ -13,7 +13,7 @@ encoding syntax, to assist with the process.
 - ☐ CodedSliceDataPartitionB
 - ☐ CodedSliceDataPartitionC
 - ☐ CodedSliceIdr
-- ☐ SEI
+- ☐ SEI -- partial (there are a lot of SEIs)
 - 🗹 SPS
 - 🗹 PPS
 - 🗹 AUD
