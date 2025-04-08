@@ -1,0 +1,23 @@
+svc_vui_parameters_extension( ) { 
+    vui_ext_num_entries_minus1 0 ue(v)
+    for( i = 0; i <= vui_ext_num_entries_minus1; i++ ) {
+        vui_ext_dependency_id[ i ] 0 u(3)
+        vui_ext_quality_id[ i ] 0 u(4)
+        vui_ext_temporal_id[ i ] 0 u(3)
+        vui_ext_timing_info_present_flag[ i ] 0 u(1)
+        if( vui_ext_timing_info_present_flag[ i ] ) {
+            vui_ext_num_units_in_tick[ i ] 0 u(32)
+            vui_ext_time_scale[ i ] 0 u(32)
+            vui_ext_fixed_frame_rate_flag[ i ] 0 u(1)
+        }
+        vui_ext_nal_hrd_parameters_present_flag[ i ] 0 u(1)
+        if( vui_ext_nal_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 0
+        vui_ext_vcl_hrd_parameters_present_flag[ i ] 0 u(1)
+        if( vui_ext_vcl_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 0
+        if( vui_ext_nal_hrd_parameters_present_flag[ i ] | | vui_ext_vcl_hrd_parameters_present_flag[ i ] )
+            vui_ext_low_delay_hrd_flag[ i ] 0 u(1)
+        vui_ext_pic_struct_present_flag[ i ] 0 u(1)
+    }
+}

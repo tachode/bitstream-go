@@ -1,0 +1,26 @@
+subset_seq_parameter_set( ) { 
+    seq_parameter_set_data( ) 0
+    if( profile_idc = = 83 | | profile_idc = = 86 ) {
+        seq_parameter_set_svc_extension( ) /* specified in Annex G */ 0
+        svc_vui_parameters_present_flag 0 u(1)
+        if( svc_vui_parameters_present_flag = = 1 )
+                svc_vui_parameters_extension( ) /* specified in Annex G */ 0
+    } else if( profile_idc = = 118 | | profile_idc = = 128 | | profile_idc = = 134 ) {
+        bit_equal_to_one /* equal to 1 */ 0 f(1)
+        seq_parameter_set_mvc_extension( ) /* specified in Annex H */ 0
+        mvc_vui_parameters_present_flag 0 u(1)
+        if( mvc_vui_parameters_present_flag = = 1 )
+            mvc_vui_parameters_extension( ) /* specified in Annex H */ 0
+    } else if( profile_idc = = 138 | | profile_idc = = 135 ) {
+        bit_equal_to_one /* equal to 1 */ 0 f(1)
+                seq_parameter_set_mvcd_extension( ) /* specified in Annex I */
+    } else if( profile_idc = = 139 ) {
+        bit_equal_to_one /* equal to 1 */ 0 f(1)
+        seq_parameter_set_mvcd_extension( ) /* specified in Annex I */ 0
+        seq_parameter_set_3davc_extension( ) /* specified in Annex J */ 0
+    }
+    additional_extension2_flag 0 u(1)
+    if( additional_extension2_flag = = 1 )
+        while( more_rbsp_data( ) )
+            additional_extension2_data_flag 0 u(1)
+}

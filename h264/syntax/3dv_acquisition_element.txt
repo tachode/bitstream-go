@@ -1,0 +1,54 @@
+3dv_acquisition_element( numViews, predDirection, expLen, index, outSign, outExp, outMantissa, outManLen ) {
+    if( numViews > 1 )
+        element_equal_flag 11 u(1)
+    if( element_equal_flag = = 0 )
+        numValues = numViews
+    else
+        numValues = 1
+    for( i = 0; i < numValues; i++ ) {
+        if( predDirection = = 2 && i = = 0 ) {
+            mantissa_len_minus1 11 u(5)
+            outManLen[ index ][ i ] = manLen = mantissa_len_minus1 + 1
+        }
+        if( predDirection = = 2 ) {
+            sign0 11 u(1)
+            outSign[ index ][ i ] = sign0
+            exponent0 11 u(v)
+            outExp[ index ][ i ] = exponent0
+            mantissa0 11 u(v)
+            outMantissa[ index ][ i ] = mantissa0
+        } else {
+            skip_flag 11 u(1)
+            if( skip_flag = = 0 ) {
+                sign1 11 u(1)
+                outSign[ index ][ i ] = sign1
+                exponent_skip_flag 11 u(1)
+                if( exponent_skip_flag = = 0 ) {
+                    exponent1 11 u(v)
+                    outExp[ index ][ i ] = exponent1
+                } else
+                    outExp[ index ][ i ] = outExp[ ref_dps_id0 ][ i ]
+                mantissa_diff 11 se(v)
+                if( predDirection = = 0 )
+                    mantissaPred = (( OutMantissa[ ref_dps_id0 ][ i ] * predWeight0 + outMantissa[ ref_dps_id1 ][ i ] * ( 64-predWeight0 ) + 32 ) >> 6 )
+                else
+                    mantissaPred = outMantissa[ ref_dps_id0 ][ i ]
+                outMantissa[ index ][ i ] = mantissaPred + mantissa_diff
+                outManLen[ index ][ i ] = outManLen[ ref_dps_id0 ][ i ]
+            } else {
+                outSign[ index ][ i ] = outSign[ ref_dps_id0 ][ i ]
+                outExp[ index ][ i ] = outExp[ ref_dps_id0 ][ i ]
+                outMantissa[ index ][ i ] = outMantissa[ ref_dps_id0 ][ i ]
+                outManLen[ index ][ i ] = outManLen[ ref_dps_id0 ][ i ]
+            }
+        }
+    }
+    if( element_equal_flag = = 1 ) {
+        for( i = 1; i < num_views_minus1 + 1 − deltaFlag; i++ ) {
+            outSign[ index ][ i ] = outSign[ index ][ 0 ]
+            outExp[ index ][ i ] = outExp[ index ][ 0 ]
+            outMantissa[ index ][ i ] = outMantissa[ index ][ 0 ]
+            outManLen[ index ][ i ] = outManLen[ index ][ 0 ]
+        }
+    }
+}

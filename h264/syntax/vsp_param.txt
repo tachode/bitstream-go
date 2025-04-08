@@ -1,0 +1,9 @@
+vsp_param( numViews, predDirection, index ) { 
+    for( i = 0; i < numViews; i++ )
+        for( j = 0; j < i; j++ ) {
+            disparity_diff_wji[ j ][ i ] 0 ue(v)
+            disparity_diff_oji[ j ][ i ] 0 ue(v)
+            disparity_diff_wij[ i ][ j ] 0 ue(v)
+            disparity_diff_oij[ i ][ j ] 0 ue(v)
+        }
+}

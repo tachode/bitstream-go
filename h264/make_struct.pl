@@ -41,17 +41,20 @@ while (<>) {
             unshift(@type_params, "d bits.Decoder");
             $type_params = join(", ", @type_params);
         }
-    } elsif (/^( *)([^ ]*)(\[[^\]]*\])? (All|\d+) ([a-z]+\([^ ]+\))(=.*)?/) {    
+    } elsif (/^( *)([^ ]*)((\[.*\])*) (All|\d+) ([a-z]+\([^ ]+\))(=.*)?/) {    
         # This is the definition of a variable -- we add a corresponding field to the
         # struct and add code to decode it to the Read() function
-        ($indent, $name, $index, $descriptor, $extra) = ($1, $2, $3, $5, $6);
+        ($indent, $name, $index, $descriptor, $extra) = ($1, $2, $3, $6, $7);
         $snake_name = $name;
         $name = camel_case($name);
         $name_map{$snake_name} = $name;
         $type = type_for($descriptor);
-        $index =~ s/\[ *(.*?) *\]/$1/;
+        $index =~ s/^\[ ?//g;
+        $index =~ s/ ?\]$//g;
+        @index = split(/ ?\]\[ ?/, $index);
+        $index = join ", ", @index;
         if ($index ne "") {
-            $type = "[]".$type;
+            $type = ("[]"x@index).$type;
             $read_func .= "${indent}d.DecodeIndex(e, \"$name\", $index)\n"
         } else {
             $read_func .= "${indent}d.Decode(e, \"$name\")\n"

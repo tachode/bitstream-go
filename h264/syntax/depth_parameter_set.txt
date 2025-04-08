@@ -1,0 +1,26 @@
+depth_parameter_set( ) { 
+    depth_parameter_set_id 11 ue(v)
+    pred_direction 11 ue(v)
+    if( pred_direction = = 0 | | pred_direction = = 1 ) {
+        ref_dps_id0 11 ue(v)
+        predWeight0 = 64
+    }
+    if( pred_direction = = 0 ) {
+        ref_dps_id1 11 ue(v)
+        pred_weight0 11 u(6)
+        predWeight0 = pred_weight0
+    }
+    num_depth_views_minus1 11 ue(v)
+    depth_ranges( num_depth_views_minus1 + 1, pred_direction, depth_parameter_set_id )
+    vsp_param_flag 11 u(1)
+    if( vsp_param_flag )
+        vsp_param( num_depth_views_minus1 + 1, pred_direction, depth_parameter_set_id )
+    depth_param_additional_extension_flag 11 u(1)
+    nonlinear_depth_representation_num 11 ue(v)
+    for( i = 1; i <= nonlinear_depth_representation_num; i++ )
+        nonlinear_depth_representation_model[ i ] 11 ue(v)
+    if(depth_param_additional_extension_flag = = 1 )
+        while( more_rbsp_data( ) )
+            depth_param_additional_extension_data_flag 11 u(1)
+    rbsp_trailing_bits( )
+}

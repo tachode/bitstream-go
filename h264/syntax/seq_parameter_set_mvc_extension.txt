@@ -1,0 +1,48 @@
+seq_parameter_set_mvc_extension( ) { 
+    num_views_minus1 0 ue(v)
+    for( i = 0; i <= num_views_minus1; i++ )
+        view_id[ i ] 0 ue(v)
+    for( i = 1; i <= num_views_minus1; i++ ) {
+        num_anchor_refs_l0[ i ] 0 ue(v)
+        for( j = 0; j < num_anchor_refs_l0[ i ]; j++ )
+            anchor_ref_l0[ i ][ j ] 0 ue(v)
+        num_anchor_refs_l1[ i ] 0 ue(v)
+        for( j = 0; j < num_anchor_refs_l1[ i ]; j++ )
+            anchor_ref_l1[ i ][ j ] 0 ue(v)
+    }
+    for( i = 1; i <= num_views_minus1; i++ ) {
+        num_non_anchor_refs_l0[ i ] 0 ue(v)
+        for( j = 0; j < num_non_anchor_refs_l0[ i ]; j++ )
+            non_anchor_ref_l0[ i ][ j ] 0 ue(v)
+        num_non_anchor_refs_l1[ i ] 0 ue(v)
+        for( j = 0; j < num_non_anchor_refs_l1[ i ]; j++ )
+            non_anchor_ref_l1[ i ][ j ] 0 ue(v)
+    }
+    num_level_values_signalled_minus1 0 ue(v)
+    for( i = 0; i <= num_level_values_signalled_minus1; i++ ) {
+        level_idc[ i ] 0 u(8)
+        num_applicable_ops_minus1[ i ] 0 ue(v)
+        for( j = 0; j <= num_applicable_ops_minus1[ i ]; j++ ) {
+            applicable_op_temporal_id[ i ][ j ] 0 u(3)
+            applicable_op_num_target_views_minus1[ i ][ j ] 0 ue(v)
+            for( k = 0; k <= applicable_op_num_target_views_minus1[ i ][ j ]; k++ )
+                applicable_op_target_view_id[ i ][ j ][ k ] 0 ue(v)
+            applicable_op_num_views_minus1[ i ][ j ] 0 ue(v)
+        }
+    }
+    if( profile_idc = = 134 ) {
+        mfc_format_idc 0 u(6)
+        if( mfc_format_idc = = 0 | | mfc_format_idc = = 1 ) {
+            default_grid_position_flag 0 u(1)
+            if( !default_grid_position_flag ) {
+                view0_grid_position_x 0 u(4)
+                view0_grid_position_y 0 u(4)
+                view1_grid_position_x 0 u(4)
+                view1_grid_position_y 0 u(4)
+            }
+        }
+        rpu_filter_enabled_flag 0 u(1)
+        if( !frame_mbs_only_flag )
+            rpu_field_processing_flag 0 u(1)
+    }
+}

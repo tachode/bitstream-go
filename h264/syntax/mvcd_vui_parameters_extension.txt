@@ -1,0 +1,27 @@
+mvcd_vui_parameters_extension( ) { 
+    vui_mvcd_num_ops_minus1 0 ue(v)
+    for( i = 0; i <= vui_mvcd_num_ops_minus1; i++ ) {
+        vui_mvcd_temporal_id[ i ] 0 u(3)
+        vui_mvcd_num_target_output_views_minus1[ i ] 0 ue(v)
+        for( j = 0; j <= vui_mvcd_num_target_output_views_minus1[ i ]; j++ ) {
+            vui_mvcd_view_id[ i ][ j ] 0 ue(v)
+            vui_mvcd_depth_flag[ i ][ j ] 0 u(1)
+            vui_mvcd_texture_flag[ i ][ j ] 0 u(1)
+        }
+        vui_mvcd_timing_info_present_flag[ i ] 0 u(1)
+        if( vui_mvcd_timing_info_present_flag[ i ] ) {
+            vui_mvcd_num_units_in_tick[ i ] 0 u(32)
+            vui_mvcd_time_scale[ i ] 0 u(32)
+            vui_mvcd_fixed_frame_rate_flag[ i ] 0 u(1)
+        }
+        vui_mvcd_nal_hrd_parameters_present_flag[ i ] 0 u(1)
+        if( vui_mvcd_nal_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 0
+        vui_mvcd_vcl_hrd_parameters_present_flag[ i ] 0 u(1)
+        if( vui_mvcd_vcl_hrd_parameters_present_flag[ i ] )
+            hrd_parameters( ) 0
+        if( vui_mvcd_nal_hrd_parameters_present_flag[ i ] | | vui_mvcd_vcl_hrd_parameters_present_flag[ i ] )
+            vui_mvcd_low_delay_hrd_flag[ i ] 0 u(1)
+        vui_mvcd_pic_struct_present_flag[ i ] 0 u(1)
+    }
+}

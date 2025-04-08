@@ -1,0 +1,50 @@
+seq_parameter_set_mvcd_extension( ) { 
+    num_views_minus1 0 ue(v)
+    for( i = 0, NumDepthViews = 0; i <= num_views_minus1; i++ ) {
+        view_id[ i ] 0 ue(v)
+        depth_view_present_flag[ i ] 0 u(1)
+        DepthViewId[ NumDepthViews ] = view_id[ i ]
+        NumDepthViews += depth_view_present_flag[ i ]
+        texture_view_present_flag[ i ] 0 u(1)
+    }
+    for( i = 1; i <= num_views_minus1; i++ )
+        if( depth_view_present_flag[ i ] ) {
+            num_anchor_refs_l0[ i ] 0 ue(v)
+            for( j = 0; j < num_anchor_refs_l0[ i ]; j++ )
+                anchor_ref_l0[ i ][ j ] 0 ue(v)
+            num_anchor_refs_l1[ i ] 0 ue(v)
+            for( j = 0; j < num_anchor_refs_l1[ i ]; j++ )
+                anchor_ref_l1[ i ][ j ] 0 ue(v)
+        }
+    for( i = 1; i <= num_views_minus1; i++ )
+      if( depth_view_present_flag[ i ] ) {
+          num_non_anchor_refs_l0[ i ] 0 ue(v)
+          for( j = 0; j < num_non_anchor_refs_l0[ i ]; j++ )
+              non_anchor_ref_l0[ i ][ j ] 0 ue(v)
+          num_non_anchor_refs_l1[ i ] 0 ue(v)
+          for( j = 0; j < num_non_anchor_refs_l1[ i ]; j++ )
+              non_anchor_ref_l1[ i ][ j ] 0 ue(v)
+      }
+    num_level_values_signalled_minus1 0 ue(v)
+    for( i = 0; i <= num_level_values_signalled_minus1; i++ ) {
+        level_idc[ i ] 0 u(8)
+        num_applicable_ops_minus1[ i ] 0 ue(v)
+        for( j = 0; j <= num_applicable_ops_minus1[ i ]; j++ ) {
+            applicable_op_temporal_id[ i ][ j ] 0 u(3)
+            applicable_op_num_target_views_minus1[ i ][ j ] 0 ue(v)
+            for( k = 0; k <= applicable_op_num_target_views_minus1[ i ][ j ]; k++ ) {
+                applicable_op_target_view_id[ i ][ j ][ k ] 0 ue(v)
+                applicable_op_depth_flag[ i ][ j ][ k ] 0 u(1)
+                applicable_op_texture_flag[ i ][ j ][ k ] 0 u(1)
+            }
+            applicable_op_num_texture_views_minus1[ i ][ j ] 0 ue(v)
+            applicable_op_num_depth_views[ i ][ j ] 0 ue(v)
+        }
+    }
+    mvcd_vui_parameters_present_flag 0 u(1)
+    if( mvcd_vui_parameters_present_flag = = 1 )
+        mvcd_vui_parameters_extension( )
+    texture_vui_parameters_present_flag 0 u(1)
+    if( texture_vui_parameters_present_flag = = 1 )
+        mvc_vui_parameters_extension( ) 0
+}
