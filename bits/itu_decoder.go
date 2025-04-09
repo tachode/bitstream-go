@@ -166,6 +166,10 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int, subindex ..
 	}
 	descriptor := structField.Tag.Get("descriptor")
 	structVal := val.FieldByName(fieldName)
+	return d.decodeIndex(structName, fieldName, structVal, descriptor, index, subindex...)
+}
+
+func (d *ItuDecoder) decodeIndex(structName string, fieldName string, structVal reflect.Value, descriptor string, index int, subindex ...int) error {
 	if structVal.Kind() != reflect.Slice {
 		return d.setError(fmt.Errorf("field %s is not a slice", fieldName))
 	}
@@ -181,10 +185,23 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int, subindex ..
 	if index+1 > structVal.Len() {
 		structVal.SetLen(index + 1)
 	}
-	err := d.load(structName, fmt.Sprintf("%v[%v]", structField.Name, index), structVal.Index(index), descriptor)
-	if err != nil {
-		return d.setError(fmt.Errorf("field %s[%d]: %w", fieldName, index, err))
+
+	if len(subindex) > 0 {
+		if structVal.Index(index).Kind() != reflect.Slice {
+			return d.setError(fmt.Errorf("field %s[%d] is not a slice", fieldName, index))
+		}
+		structVal = structVal.Index(index)
+		fieldName = fmt.Sprintf("%s[%d]", fieldName, index)
+		index = subindex[0]
+		subindex = subindex[1:]
+		return d.decodeIndex(structName, fieldName, structVal, descriptor, index, subindex...)
+	} else {
+		err := d.load(structName, fmt.Sprintf("%v[%v]", fieldName, index), structVal.Index(index), descriptor)
+		if err != nil {
+			return d.setError(fmt.Errorf("field %s[%d]: %w", fieldName, index, err))
+		}
 	}
+
 	return nil
 }
 
