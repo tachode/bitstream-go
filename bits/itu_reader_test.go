@@ -82,3 +82,30 @@ func TestItuReader_EOF(t *testing.T) {
 	assert.Error(t, err)
 	assert.ErrorIs(t, io.EOF, err)
 }
+func TestItuReader_I(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    byte
+		bits     int
+		expected int64
+	}{
+		{"I(0) - 1 bit", 0b0_1111111, 1, 0},
+		{"I(1) - 2 bits", 0b01_1111111, 2, 1},
+		{"I(-1) - 1 bit", 0b1_1111111, 1, -1},
+		{"I(-1) - 2 bits", 0b11_111111, 2, -1},
+		{"I(2) - 3 bits", 0b010_11111, 3, 2},
+		{"I(-2) - 3 bits", 0b111_11111, 3, -2},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			reader := &bits.ReadBuffer{Reader: bytes.NewBuffer([]byte{tt.input})}
+			ituReader := &bits.ItuReader{Reader: reader}
+
+			result, n, err := ituReader.I(tt.bits)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected, result)
+			assert.Equal(t, tt.bits, n)
+		})
+	}
+}

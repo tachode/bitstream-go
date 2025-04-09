@@ -188,6 +188,9 @@ sub type_for {
             return "uint$len";
         }
     }
+    if ($type eq "i") {
+        return "int$len";
+    }
     if($type eq "b" && $len == 8) {
         return "byte";
     }

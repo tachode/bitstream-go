@@ -204,13 +204,11 @@ func (d *ItuDecoder) load(structName string, name string, val reflect.Value, des
 	if err != nil {
 		return fmt.Errorf("could not decode field %v: %w", name, err)
 	}
+
+	// For fixed-length descriptors, "variable-length" descriptors
+	// need to have their actual length set by the caller
 	switch descriptorType {
-	case "ae", "ce", "me", "st", "te":
-		return fmt.Errorf("field %v: descriptor type %v is not yet supported", name, descriptorType)
-	case "i":
-		// TODO: Implement signed integer parsing
-		return fmt.Errorf("field %v: descriptor type %v is not yet supported", name, descriptorType)
-	case "u", "b", "f":
+	case "u", "b", "f", "i":
 		if descriptorLength == 0 {
 			var ok bool
 			baseName := name
@@ -222,12 +220,30 @@ func (d *ItuDecoder) load(structName string, name string, val reflect.Value, des
 				return d.setError(fmt.Errorf("field %v: descriptor length is not set for %s", name, baseName))
 			}
 		}
+	}
+
+	d.valueSource[name] = structName
+	switch descriptorType {
+	case "ae", "ce", "me", "st", "te":
+		return fmt.Errorf("field %v: descriptor type %v is not yet supported", name, descriptorType)
+	case "i":
+		v, n, err := d.reader.I(descriptorLength)
+		bitsRead = n
+		if err != nil {
+			return fmt.Errorf("field %v: %w", name, err)
+		}
+		if val.CanInt() {
+			val.SetInt(v)
+			d.value[name] = v
+		} else {
+			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
+		}
+	case "u", "b", "f":
 		v, n, err := d.reader.U(descriptorLength)
 		bitsRead = n
 		if err != nil {
 			return fmt.Errorf("field %v: %w", name, err)
 		}
-		d.valueSource[name] = structName
 		if val.CanUint() {
 			val.SetUint(v)
 			d.value[name] = v
@@ -251,7 +267,6 @@ func (d *ItuDecoder) load(structName string, name string, val reflect.Value, des
 		if val.CanUint() {
 			val.SetUint(v)
 			d.value[name] = v
-			d.valueSource[name] = structName
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}
@@ -265,7 +280,6 @@ func (d *ItuDecoder) load(structName string, name string, val reflect.Value, des
 		if val.CanInt() {
 			val.SetInt(v)
 			d.value[name] = v
-			d.valueSource[name] = structName
 		} else {
 			return fmt.Errorf("field %v: cannot store value of descriptor type %v in %v", name, descriptor, val.Kind())
 		}

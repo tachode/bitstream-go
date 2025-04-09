@@ -13,6 +13,24 @@ func (r *ItuReader) U(bits int) (val uint64, n int, err error) {
 	return val, bits, err
 }
 
+func (r *ItuReader) I(bits int) (val int64, n int, err error) {
+	var uval uint64
+	uval, err = r.ReadBits(bits)
+	if err != nil {
+		return 0, bits, err
+	}
+
+	// If the sign bit is set, we need to extend it
+	if uval&(1<<(bits-1)) != 0 {
+		extendedBits := uint64(0xFFFF_FFFF_FFFF_FFFF) << bits
+		val = int64(uval | extendedBits)
+	} else {
+		val = int64(uval)
+	}
+
+	return val, bits, err
+}
+
 func (r *ItuReader) UE() (val uint64, n int, err error) {
 	leadingZeroBits := 0
 

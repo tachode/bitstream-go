@@ -24,7 +24,7 @@ type PicTiming struct {
 	SecondsFlag        bool   `descriptor:"u(1)" json:"seconds_flag"`
 	MinutesFlag        bool   `descriptor:"u(1)" json:"minutes_flag"`
 	HoursFlag          bool   `descriptor:"u(1)" json:"hours_flag"`
-	TimeOffset         uint64 `descriptor:"i(v)" json:"time_offset"`
+	TimeOffset         int64  `descriptor:"i(v)" json:"time_offset"`
 }
 
 func (e *PicTiming) Read(d bits.Decoder, payloadSize int) error {
