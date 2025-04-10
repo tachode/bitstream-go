@@ -148,7 +148,6 @@ func (d *ItuDecoder) DecodeRange(v any, start string, end string) error {
 	return nil
 }
 
-// TODO -- implement multidimensional arrays
 func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int, subindex ...int) error {
 	if d.err != nil {
 		return d.err
