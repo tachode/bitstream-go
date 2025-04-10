@@ -166,7 +166,47 @@ func (d *ItuDecoder) DecodeIndex(v any, fieldName string, index int, subindex ..
 	}
 	descriptor := structField.Tag.Get("descriptor")
 	structVal := val.FieldByName(fieldName)
-	return d.decodeIndex(structName, fieldName, structVal, descriptor, index, subindex...)
+	err := d.decodeIndex(structName, fieldName, structVal, descriptor, index, subindex...)
+	if err != nil {
+		return err
+	}
+
+	value, found := d.value[fieldName]
+	if !found || (structVal.Type() != reflect.TypeOf(value)) {
+		d.value[fieldName] = structVal.Interface()
+	} else {
+		d.value[fieldName] = merge(reflect.ValueOf(&value).Elem(), structVal).Interface()
+	}
+
+	return nil
+}
+
+func merge(old, new reflect.Value) reflect.Value {
+	if old.Kind() != reflect.Slice || new.Kind() != reflect.Slice {
+		return new
+	}
+
+	// ensure the old slice is large enough to hold the new values
+	for old.Len() < new.Len() {
+		old.Set(reflect.Append(old, reflect.Zero(old.Type().Elem())))
+	}
+
+	for i := range new.Len() {
+		if new.Index(i).Kind() == reflect.Slice {
+			if !new.Index(i).IsNil() {
+				if old.Index(i).IsNil() {
+					old.Index(i).Set(new.Index(i))
+				} else {
+					// merge the two slices
+					old.Index(i).Set(merge(old.Index(i), new.Index(i)))
+				}
+			}
+		} else {
+			// Element is not a slice; we just copy the value
+			old.Index(i).Set(new.Index(i))
+		}
+	}
+	return old
 }
 
 func (d *ItuDecoder) decodeIndex(structName string, fieldName string, structVal reflect.Value, descriptor string, index int, subindex ...int) error {

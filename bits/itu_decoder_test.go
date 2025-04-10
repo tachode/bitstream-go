@@ -171,9 +171,7 @@ func TestItuDecoder_DecodeWithMultidimensionalSliceFields(t *testing.T) {
 
 	assert.Nil(t, decoder.Value("Field2[1][1]"))
 
-	// Note: the semantics of the base name of a slice might change
-	// in the future
-	assert.Nil(t, decoder.Value("Field2"))
+	assert.Equal(t, [][][]uint{{nil, nil, {0x0, 0x5}}, {nil, {0x0, 0x0, 0x0, 0x6}}}, decoder.Value("Field2"))
 
 	t.Logf("Log:\n%s", strings.Join(decoder.Log(), "\n"))
 }
