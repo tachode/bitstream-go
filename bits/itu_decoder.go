@@ -3,6 +3,7 @@ package bits
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"reflect"
@@ -412,4 +413,12 @@ func (d *ItuDecoder) setError(err error) error {
 func (d *ItuDecoder) log(msg string) {
 	// fmt.Println(msg)
 	d.decodingLog = append(d.decodingLog, msg)
+}
+
+func (d *ItuDecoder) ValueJson() string {
+	jsonData, err := json.MarshalIndent(d.value, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("failed to serialize value to JSON: %v", err)
+	}
+	return string(jsonData)
 }

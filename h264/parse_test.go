@@ -92,3 +92,7 @@ func TestParse_EmptyBuffer(t *testing.T) {
 		t.Fatalf("Expected error for empty buffer, got nil")
 	}
 }
+
+func TestParse_ValueJson(t *testing.T) {
+	t.Logf("Extracted Values:\n%s", parser.ValueJson())
+}

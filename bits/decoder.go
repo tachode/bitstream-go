@@ -12,6 +12,7 @@ type Decoder interface {
 	SetValueLength(name string, length int)
 	Reset(in any) error
 	Error() error
+	ValueJson() string
 
 	// Functions from H.264, §7.2
 	ByteAligned() bool

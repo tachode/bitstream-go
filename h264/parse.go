@@ -59,3 +59,7 @@ func (p *Parser) Parse(buffer []byte) (*NalUnit, error) {
 	nal.Payload = payload
 	return nal, p.decoder.Error()
 }
+
+func (p *Parser) ValueJson() string {
+	return p.decoder.ValueJson()
+}
