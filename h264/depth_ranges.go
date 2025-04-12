@@ -23,12 +23,12 @@ func (e *DepthRanges) Read(d bits.Decoder, numViews int, predDirection int, inde
 	if e.ZNearFlag {
 		e.Near3dvAcquisitionElement = &Struct3dvAcquisitionElement{}
 		e.ZNearSign, e.ZNearExp, e.ZNearMantissa, e.ZNearManLen, _ =
-			e.Near3dvAcquisitionElement.Read(d, numViews, predDirection, 7, index)
+			e.Near3dvAcquisitionElement.Read(d, numViews, predDirection, 7, index, Near)
 	}
 	if e.ZFarFlag {
 		e.Far3dvAcquisitionElement = &Struct3dvAcquisitionElement{}
 		e.ZFarSign, e.ZFarExp, e.ZFarMantissa, e.ZFarManLen, _ =
-			e.Far3dvAcquisitionElement.Read(d, numViews, predDirection, 7, index)
+			e.Far3dvAcquisitionElement.Read(d, numViews, predDirection, 7, index, Far)
 	}
 	return d.Error()
 }

@@ -22,8 +22,8 @@ encoding syntax, to assist with the process.
 - 🗹 Filler
 - 🗹 SpsExt
 - 🗹 PrefixNalUnit (still needs unit tests)
-- ☐ SubsetSeqParameterSet - WIP
-- ☐ DepthParameterSet - WIP
+- 🗹 SubsetSeqParameterSet (still needs unit tests)
+- 🗹 DepthParameterSet (still needs unit tests)
 - ☐ CodedSliceAux
 - ☐ CodedSliceExtension
 - ☐ CodedSliceExtension3D
